@@ -1,0 +1,44 @@
+﻿<Page
+    x:Class="youtube_backgrounder.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:youtube_backgrounder"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="SplitViewStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <SplitView x:ConnectionId='1' x:Name="MenuSplitView" DisplayMode="CompactOverlay" IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="200" PaneBackground="{ThemeResource SplitViewBackgroundBrush}">
+        <SplitView.Pane>
+            <StackPanel>
+                <RadioButton x:ConnectionId='2' x:Name="MenuButton" Style="{StaticResource SplitViewMenuButtonStyle}"                         />
+
+                <RadioButton x:ConnectionId='3' x:Name="SearchButton" Tag="&#xE71E;" Content="Search" Style="{StaticResource SplitViewNavButtonStyle}" IsChecked="True"                            />
+
+                <RadioButton x:ConnectionId='4' x:Name="PlayerButton" Tag="&#xE768;" Content="Play" Style="{StaticResource SplitViewNavButtonStyle}"                           />
+
+                <!-- Settings button -->
+                <RadioButton Tag="" Content="Settings" Style="{StaticResource SplitViewNavButtonStyle}" />
+
+                <!-- About button -->
+                <RadioButton Tag="" Content="About" Style="{StaticResource SplitViewNavButtonStyle}" />
+            </StackPanel>
+        </SplitView.Pane>
+        <SplitView.Content>
+            <Grid>
+                <StackPanel>
+                    <SearchBox x:ConnectionId='5' SearchHistoryEnabled="False" HorizontalAlignment="Left" Height="40" Margin="30,4,0,4" VerticalAlignment="Top" Width="480"                                   FontSize="20"/>
+                    <Frame x:ConnectionId='6' x:Name="SplitViewFrame"/>
+                </StackPanel>
+            </Grid>
+        </SplitView.Content>
+    </SplitView>
+</Page>
+

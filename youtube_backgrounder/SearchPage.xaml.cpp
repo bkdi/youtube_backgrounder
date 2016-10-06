@@ -35,7 +35,7 @@ SearchPage::SearchPage()
 
 void SearchPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
-	Platform::String^ title = "not afraid" /*(safe_cast<NavigationProperties^> (e->Parameter))->param*/;
+	Platform::String^ title = "tor poznań" /*(safe_cast<NavigationProperties^> (e->Parameter))->param*/;
 	//page = (safe_cast<NavigationProperties^> (e->Parameter))->page;
 
 	auto httpClient = ref new HttpClient();
@@ -69,7 +69,6 @@ void SearchPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArg
 	});
 }
 
-#include "tools_http.h"
 void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e)
 {
 	YoutubeMiniatureData^ youtubeData = safe_cast<YoutubeMiniatureData^> (e->ClickedItem);
@@ -77,9 +76,6 @@ void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xam
 	auto httpClient = ref new HttpClient();
 
 	auto uri = ref new Uri(L"https://www.youtube.com/get_video_info?&video_id=" + youtubeData->VideoId + L"&el=info&ps=default&eurl=&gl=US&hl=en");
-
-	auto t = ToolsHttp::getStrFileAsync(L"https://www.youtube.com/get_video_info?&video_id=" + youtubeData->VideoId + L"&el=info&ps=default&eurl=&gl=US&hl=en");
-
 
 	concurrency::create_task(httpClient->GetStringAsync(uri)).then([this, youtubeData, httpClient](Platform::String^ youtubeGetVideoInfoFile)
 	{
