@@ -14,6 +14,18 @@ using namespace Windows::Media;
 
 namespace youtube_backgrounder
 {
+	public ref class SearchPageNavParam sealed
+	{
+	public:
+		SearchPageNavParam(Platform::String^ searchedTitle, Controls::Frame^ frame)
+		{
+			title = searchedTitle;
+			playerFrame = frame;
+		} 
+
+		property Platform::String^ title;
+		property Controls::Frame^ playerFrame;
+	};
 
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
@@ -28,22 +40,15 @@ namespace youtube_backgrounder
 		void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 
 	private:	
-		Platform::String^ currentSearchedTitle;
+		SearchPageNavParam^ inputParams;
 		Platform::String^ nextPageToken;
 		YoutubeItemsCollections^ itemsCollection;
 
+		void loadYoutubeItems();
+
 		void gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e);
 		void ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e);
-
-		SystemMediaTransportControls^ systemControls;
-		void InitializeTransportControls();
-		void SystemControls_ButtonPressed(SystemMediaTransportControls^ sender, SystemMediaTransportControlsButtonPressedEventArgs^ args);
-		void PlayMedia();
-		void PauseMedia();
-		void musicPlayer_CurrentStateChanged(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void scrollResult_ViewChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^ e);
-		
-		void loadYoutubeItems();
 	};
 
 	public ref class ItemWidthStateConverter sealed : Windows::UI::Xaml::Data::IValueConverter

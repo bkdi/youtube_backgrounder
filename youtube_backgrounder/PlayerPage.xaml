@@ -7,7 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <MediaElement x:Name="musicPlayer" AudioCategory="BackgroundCapableMedia" CurrentStateChanged="MusicPlayer_CurrentStateChanged"/>
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="AppColorSchemes.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid Background="{StaticResource BackgroundPageDefault}">
+        <MediaElement x:Name="musicPlayer" AudioCategory="BackgroundCapableMedia" CurrentStateChanged="MusicPlayer_CurrentStateChanged" Visibility="Visible" AreTransportControlsEnabled="True"/>
     </Grid>
 </Page>

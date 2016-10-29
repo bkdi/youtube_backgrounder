@@ -58,14 +58,7 @@
     </Page.DataContext>
 
     <Grid x:Name="grid_main" Background="{StaticResource BackgroundPageDefault}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <MediaElement Grid.Row="0" x:Name="musicPlayer" AudioCategory="BackgroundCapableMedia" CurrentStateChanged="musicPlayer_CurrentStateChanged" Visibility="Visible" AreTransportControlsEnabled="True"/>
-        
-        <ScrollViewer x:Name="scrollResult" Grid.Row="1" Margin="0,5" ScrollViewer.VerticalScrollMode="Enabled" ScrollViewer.VerticalScrollBarVisibility="Auto" ViewChanged="scrollResult_ViewChanged">
+        <ScrollViewer x:Name="scrollResult" Margin="0,5" ScrollViewer.VerticalScrollMode="Enabled" ScrollViewer.VerticalScrollBarVisibility="Auto" ViewChanged="scrollResult_ViewChanged">
             <GridView x:Name="gridresult" ItemTemplate="{StaticResource ProductDataTemplate}" ItemsSource="{Binding YoutubeMiniatures}" ItemClick="gridresult_ItemClick" IsItemClickEnabled="True">
                 <GridView.ItemsPanel>
                     <ItemsPanelTemplate>

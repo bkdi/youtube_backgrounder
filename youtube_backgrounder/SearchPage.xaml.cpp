@@ -24,18 +24,18 @@ using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
 using namespace Windows::Storage;
 using namespace Windows::Web::Http;
+using namespace Windows::UI::Xaml::Interop;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 SearchPage::SearchPage()
 {
 	InitializeComponent();
-	InitializeTransportControls();
 }
 
 void SearchPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
-	currentSearchedTitle = safe_cast<Platform::String^> (e->Parameter);
+	inputParams = safe_cast<SearchPageNavParam^> (e->Parameter);
 	itemsCollection = ref new YoutubeItemsCollections;
 	gridresult->ItemsSource = itemsCollection->YoutubeMiniatures;
 
@@ -46,7 +46,7 @@ void youtube_backgrounder::SearchPage::loadYoutubeItems()
 {
 	auto httpClient = ref new HttpClient();
 
-	Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=" + currentSearchedTitle + L"&type=video&key=AIzaSyCIM4EzNqi1in22f4Z3Ru3iYvLaY8tc3bo";
+	Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=" + inputParams->title + L"&type=video&key=AIzaSyCIM4EzNqi1in22f4Z3Ru3iYvLaY8tc3bo";
 	if (!nextPageToken->IsEmpty())
 		url += L"&pageToken=" + nextPageToken;
 
@@ -89,10 +89,7 @@ void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xam
 	concurrency::create_task(youtubeExtractor->getVideoUrlByItagAsync(L"22")).then([this](Platform::String^ urlToPlay)
 	{
 		if (!urlToPlay->IsEmpty())
-		{
-			musicPlayer->Source = ref new Uri(urlToPlay);
-			musicPlayer->Play();
-		}
+			inputParams->playerFrame->Navigate(TypeName(PlayerPage::typeid), urlToPlay);
 	});
 }
 
@@ -111,7 +108,7 @@ void youtube_backgrounder::SearchPage::ItemsWrapGrid_SizeChanged(Platform::Objec
 	}
 }
 
-void youtube_backgrounder::SearchPage::scrollResult_ViewChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^ e)
+void SearchPage::scrollResult_ViewChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^ e)
 {
 	if (!e->IsIntermediate)
 	{
@@ -125,70 +122,6 @@ void youtube_backgrounder::SearchPage::scrollResult_ViewChanged(Platform::Object
 		}
 	}
 }
-
-void SearchPage::InitializeTransportControls()
-{
-	// Hook up app to system transport controls.
-	systemControls = SystemMediaTransportControls::GetForCurrentView();
-	systemControls->ButtonPressed += ref new TypedEventHandler<SystemMediaTransportControls^, SystemMediaTransportControlsButtonPressedEventArgs^>(this, &SearchPage::SystemControls_ButtonPressed);
-
-	// Register to handle the following system transpot control buttons.
-	systemControls->IsPlayEnabled = true;
-	systemControls->IsPauseEnabled = true;
-}
-
-void SearchPage::SystemControls_ButtonPressed(SystemMediaTransportControls^ sender, SystemMediaTransportControlsButtonPressedEventArgs^ args)
-{
-	switch (args->Button)
-	{
-	case SystemMediaTransportControlsButton::Play:
-		PlayMedia();
-		break;
-	case SystemMediaTransportControlsButton::Pause:
-		PauseMedia();
-		break;
-	default:
-		break;
-	}
-}
-
-void SearchPage::PlayMedia()
-{
-	this->Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::Normal, ref new Windows::UI::Core::DispatchedHandler([this]()
-	{
-		musicPlayer->Play();
-	}));
-}
-
-void SearchPage::PauseMedia()
-{
-	this->Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::Normal, ref new Windows::UI::Core::DispatchedHandler([this]()
-	{
-		musicPlayer->Pause();
-	}));
-}
-
-void youtube_backgrounder::SearchPage::musicPlayer_CurrentStateChanged(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
-{
-	switch (musicPlayer->CurrentState)
-	{
-	case MediaElementState::Playing:
-		systemControls->PlaybackStatus = MediaPlaybackStatus::Playing;
-		break;
-	case MediaElementState::Paused:
-		systemControls->PlaybackStatus = MediaPlaybackStatus::Paused;
-		break;
-	case MediaElementState::Stopped:
-		systemControls->PlaybackStatus = MediaPlaybackStatus::Stopped;
-		break;
-	case MediaElementState::Closed:
-		systemControls->PlaybackStatus = MediaPlaybackStatus::Closed;
-		break;
-	default:
-		break;
-	}
-}
-
 
 Platform::Object^ youtube_backgrounder::ItemWidthStateConverter::Convert(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language)
 {

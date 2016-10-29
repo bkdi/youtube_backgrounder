@@ -32,7 +32,10 @@ MainPage::MainPage()
 void MainPage::SearchSugesstion(SearchBox^ sender, SearchBoxQuerySubmittedEventArgs^ args)
 {
 	if (sender->QueryText != "")
-		SplitViewFrame->Navigate(TypeName(SearchPage::typeid), sender->QueryText);
+	{
+		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->QueryText, PlayerFrame);
+		SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
+	}
 }
 
 void MainPage::MenuButton_Click(Platform::Object^ sender, RoutedEventArgs^ e)
