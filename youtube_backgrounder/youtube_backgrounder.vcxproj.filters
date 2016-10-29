@@ -8,6 +8,9 @@
       <UniqueIdentifier>66522ed9-beca-4f72-bfda-e3e296649152</UniqueIdentifier>
       <Extensions>bmp;fbx;gif;jpg;jpeg;tga;tiff;tif;png</Extensions>
     </Filter>
+    <Filter Include="v7">
+      <UniqueIdentifier>{f8ac8e67-3d2b-491a-b99e-a6a562e23397}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
@@ -21,17 +24,26 @@
     <ClCompile Include="YoutubeExtractor.cpp" />
     <ClCompile Include="YouTubeSignatureDecrypt.cpp" />
     <ClCompile Include="tools_http.cpp" />
+    <ClCompile Include="..\..\..\Libraries\v7\v7.c">
+      <Filter>v7</Filter>
+    </ClCompile>
+    <ClCompile Include="YoutubeSearch.cpp" />
+    <ClCompile Include="YoutubeItemData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="App.xaml.h" />
     <ClInclude Include="MainPage.xaml.h" />
-    <ClInclude Include="YoutubeMiniatureData.h" />
     <ClInclude Include="SearchPage.xaml.h" />
     <ClInclude Include="PlayerPage.xaml.h" />
     <ClInclude Include="YoutubeExtractor.h" />
     <ClInclude Include="YouTubeSignatureDecrypt.h" />
     <ClInclude Include="tools_http.h" />
+    <ClInclude Include="..\..\..\Libraries\v7\v7.h">
+      <Filter>v7</Filter>
+    </ClInclude>
+    <ClInclude Include="YoutubeSearch.h" />
+    <ClInclude Include="YoutubeItemData.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -67,5 +79,6 @@
     <Page Include="SplitViewStyles.xaml" />
     <Page Include="SearchPage.xaml" />
     <Page Include="PlayerPage.xaml" />
+    <Page Include="AppColorSchemes.xaml" />
   </ItemGroup>
 </Project>

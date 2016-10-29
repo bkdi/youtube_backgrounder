@@ -7,7 +7,7 @@
 
 #include "SearchPage.g.h"
 #include "MainPage.xaml.h"
-#include "YoutubeMiniatureData.h"
+#include "YoutubeItemData.h"
 
 using namespace Windows::UI::Xaml;
 using namespace Windows::Media;
@@ -28,6 +28,10 @@ namespace youtube_backgrounder
 		void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 
 	private:	
+		Platform::String^ currentSearchedTitle;
+		Platform::String^ nextPageToken;
+		YoutubeItemsCollections^ itemsCollection;
+
 		void gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e);
 		void ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e);
 
@@ -37,6 +41,9 @@ namespace youtube_backgrounder
 		void PlayMedia();
 		void PauseMedia();
 		void musicPlayer_CurrentStateChanged(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void scrollResult_ViewChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^ e);
+		
+		void loadYoutubeItems();
 	};
 
 	public ref class ItemWidthStateConverter sealed : Windows::UI::Xaml::Data::IValueConverter
@@ -44,7 +51,6 @@ namespace youtube_backgrounder
 	public:
 
 		virtual Platform::Object^ Convert(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language);
-
 		virtual Platform::Object^ ConvertBack(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language);
 	};
 

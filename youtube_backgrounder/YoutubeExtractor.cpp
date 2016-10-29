@@ -1,76 +1,139 @@
 #include "pch.h"
 #include "YoutubeExtractor.h"
+#include "tools_http.h"
+#include "YoutubeSignatureDecrypt.h"
 
-
-const std::wstring YoutubeExtractor::START_URL_STRING = L"url%3D";
-
-YoutubeExtractor::YoutubeExtractor(const std::wstring& youtubeGetVideoInfoFile) : getVideoInfoFile(youtubeGetVideoInfoFile)
+YoutubeExtractor::YoutubeExtractor(Platform::String^ youtubeVideoId) : videoId(youtubeVideoId)
 {
 }
 
-void YoutubeExtractor::getVideosUrls()
+IAsyncOperation<Platform::String^>^ YoutubeExtractor::getVideoUrlByItagAsync(Platform::String^ itag)
 {
-	std::wstring urlsSection;
-	getUrlsSection(urlsSection);
-	getRawUrls(urlsSection);
-}
-
-void YoutubeExtractor::getUrlsSection(std::wstring &urlsSection)
-{
-	std::vector<std::wstring> rawUrls;
-	size_t startVideoUrlsIndex = getVideoInfoFile.find(L"url_encoded_fmt_stream_map");
-	size_t endVideoUrlsIndex = getVideoInfoFile.find(L"&", startVideoUrlsIndex);
-	if (endVideoUrlsIndex == std::wstring::npos)
-		endVideoUrlsIndex = getVideoInfoFile.length() - 1;
-
-	urlsSection.assign(getVideoInfoFile.cbegin() + startVideoUrlsIndex, getVideoInfoFile.cbegin() + endVideoUrlsIndex);
-}
-
-void YoutubeExtractor::getRawUrls(std::wstring &urlsSection)
-{
-	size_t startUrlIndex = 0;
-	do
+	return concurrency::create_async([this, itag]()
 	{
-		startUrlIndex = urlsSection.find(START_URL_STRING, startUrlIndex);
+		std::wstring itagValue = itag->Data();
+		downloadVideoWebpage();
+		getVideoConfiguration();
 
-		if (startUrlIndex != std::wstring::npos)
-			startUrlIndex += START_URL_STRING.length();
-		else
-			break;
-
-		size_t endUrlIndex = urlsSection.find(L"%26", startUrlIndex);
-		if (endUrlIndex == std::wstring::npos)
-			endUrlIndex = urlsSection.length() - 1;
-
-		rawVideosUrls.push_back(std::wstring(urlsSection.cbegin() + startUrlIndex, urlsSection.cbegin() + endUrlIndex));
-		
-		if(rawVideosUrls.rbegin()->find(L"%2C") != std::wstring::npos)
-			rawVideosUrls.rbegin()->erase(rawVideosUrls.rbegin()->find(L"%2C"), rawVideosUrls.rbegin()->length());
-
-	} while (startUrlIndex != std::wstring::npos);
-}
-
-void YoutubeExtractor::getVideoUrlByItag(const std::wstring& itag, std::wstring &urlToPlay)
-{
-	std::wstring itagValue = L"itag%253D" + itag;
-
-	for (auto s : rawVideosUrls)
-	{
-		if (s.find(itagValue) != std::wstring::npos)
+		Url url;
+		getUrlByItag(itagValue, url);
+		Platform::String^ urlToPlay = ref new Platform::String(url.url.c_str());
+		if (url.isEncreptedSignature)
 		{
-			urlToPlay = s;
-			prepareUrl(urlToPlay);
+			YouTubeSignatureDecrypt^ youtubeSignatureDecrypt = ref new YouTubeSignatureDecrypt(playerUrl, ref new Platform::String(url.signature.c_str()));
+			concurrency::create_task(youtubeSignatureDecrypt->decryptAsync()).then([this, &urlToPlay](Platform::String^ decryptedSignature)
+			{
+				urlToPlay += L"&signature=" + decryptedSignature;
+			}).wait();
+		}
+
+		return urlToPlay;
+	});
+}
+
+void YoutubeExtractor::getVideoConfiguration()
+{
+	size_t startVideoUrlsIndex = videoWebpageFile.find(L"ytplayer.config = {");
+	size_t endVideoUrlsIndex = videoWebpageFile.find(L"};", startVideoUrlsIndex);
+
+	if (startVideoUrlsIndex != std::wstring::npos && endVideoUrlsIndex != std::wstring::npos)
+	{
+		std::wstringstream playerConfigJsonStream(std::wstring(videoWebpageFile.cbegin() + startVideoUrlsIndex + 18, videoWebpageFile.cbegin() + endVideoUrlsIndex + 1));
+		boost::property_tree::wptree pt;
+		read_json(playerConfigJsonStream, pt);
+
+		getPlayerUrl(pt);
+		getVideosUrls(pt);
+	}
+}
+
+void YoutubeExtractor::getPlayerUrl(const boost::property_tree::wptree& pt)
+{
+	auto item = pt.get_child(L"assets");
+	playerUrl = "http:" + ref new Platform::String(item.find(L"js")->second.get_value<std::wstring>().c_str());
+}
+
+void YoutubeExtractor::getVideosUrls(const boost::property_tree::wptree& pt)
+{
+	auto item = pt.get_child(L"args");
+	getUrls(item.find(L"url_encoded_fmt_stream_map")->second.get_value<std::wstring>());
+}
+
+void YoutubeExtractor::getUrls(const std::wstring& urlsSection)
+{
+	std::vector<std::wstring> urlsSections;
+	boost::split(urlsSections, urlsSection, boost::is_any_of(","), boost::token_compress_on);
+
+	for (auto section : urlsSections)
+	{
+		std::vector<std::wstring> urlSectionItems;
+		boost::split(urlSectionItems, section, boost::is_any_of("&"), boost::token_compress_on);
+		Url url;
+		for (auto s : urlSectionItems)
+		{
+			if (s.find(L"url=") == 0)
+			{
+				url.url = s.substr(4, s.length());
+				unescape(url.url);
+			}
+			else if (s.find(L"itag=") == 0)
+				url.itag = s.substr(5, s.length());
+			else if (s.find(L"s=") == 0)
+				url.signature = s.substr(2, s.length());
+			else if (s.find(L"sig=") == 0)
+				url.signature = s.substr(4, s.length());
+		}
+		url.isEncreptedSignature = !url.signature.empty();
+		videosUrls.push_back(url);
+	}
+}
+
+void YoutubeExtractor::getUrlByItag(const std::wstring& itag, Url &urlByItag)
+{
+	for (auto url : videosUrls)
+	{
+		if (url.itag == itag)
+		{
+			urlByItag = url;
+			break;
 		}
 	}
 }
 
-void YoutubeExtractor::prepareUrl(std::wstring & urltoPlay)
+void YoutubeExtractor::unescape(std::wstring & escaped)
 {
-	boost::replace_all(urltoPlay, L"%2526", L"&");
-	boost::replace_all(urltoPlay, L"%253D", L"=");
-	boost::replace_all(urltoPlay, L"%253A", L":");
-	boost::replace_all(urltoPlay, L"%252F", L"/");
-	boost::replace_all(urltoPlay, L"%2525", L"%");
-	boost::replace_all(urltoPlay, L"%253F", L"?");
+	boost::replace_all(escaped, L"%26", L"&");
+	boost::replace_all(escaped, L"%3D", L"=");
+	boost::replace_all(escaped, L"%3A", L":");
+	boost::replace_all(escaped, L"%2F", L"/");
+	boost::replace_all(escaped, L"%3F", L"?");
+	boost::replace_all(escaped, L"%2C", L",");
+	boost::replace_all(escaped, L"%25", L"%");
 }
 
+void YoutubeExtractor::downloadVideoWebpage()
+{
+	Platform::String^ youtubeVideoWebPage;
+	ToolsHttp::getStrData(L"https://www.youtube.com/watch?v=" + videoId + L"&gl=US&hl=en&has_verified=1&bpctr=9999999999", youtubeVideoWebPage);
+	videoWebpageFile = youtubeVideoWebPage->Data();
+}
+
+
+/*
+void YoutubeExtractor::downloadGetVideoInfoFile()
+{
+	Platform::String^ youtubeGetVideoInfoFile;
+	ToolsHttp::getStrData(L"https://www.youtube.com/get_video_info?&video_id=" + videoId + L"&el=info&ps=default&eurl=&gl=US&hl=en", youtubeGetVideoInfoFile);
+	getVideoInfoFile = youtubeGetVideoInfoFile->Data();
+}
+
+void YoutubeExtractor::getUrlsSection(std::wstring &urlsSection)
+{
+	size_t startVideoUrlsIndex = getVideoInfoFile.find(START_URLS_STRING);
+	size_t endVideoUrlsIndex = getVideoInfoFile.find(L"&", startVideoUrlsIndex);
+	if (endVideoUrlsIndex == std::wstring::npos)
+		endVideoUrlsIndex = getVideoInfoFile.length() - 1;
+
+	urlsSection.assign(getVideoInfoFile.cbegin() + startVideoUrlsIndex + START_URLS_STRING.length(), getVideoInfoFile.cbegin() + endVideoUrlsIndex);
+	unescape(urlsSection);
+}*/

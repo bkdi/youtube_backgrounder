@@ -2,5 +2,5 @@
 
 namespace ToolsHttp
 {
-	auto getStrFileAsync(Platform::String^ url);
+	void getStrData(Platform::String^ url, Platform::String^& data);
 }

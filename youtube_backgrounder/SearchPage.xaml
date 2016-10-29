@@ -9,6 +9,9 @@
 
     <Page.Resources>
         <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="AppColorSchemes.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
             <local:ItemWidthStateConverter x:Key="ItemWidthStateConverter"/>
             <DataTemplate x:Key="ProductDataTemplate" x:DataType="ItemsControl">
                 <UserControl x:Name="ItemArea" local:SizeChange.IsEnabled="True">
@@ -51,18 +54,19 @@
         </ResourceDictionary>
     </Page.Resources>
     <Page.DataContext>
-        <local:DataSource/>
+        <local:YoutubeItemsCollections/>
     </Page.DataContext>
 
-    <Grid x:Name="grid_main" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" >
+    <Grid x:Name="grid_main" Background="{StaticResource BackgroundPageDefault}">
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <MediaElement Grid.Row="0" x:Name="musicPlayer" AudioCategory="BackgroundCapableMedia" CurrentStateChanged="musicPlayer_CurrentStateChanged" Visibility="Visible" Height="400"/>
-        <ScrollViewer Grid.Row="1" x:Name="scroll" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" >
-            <GridView Grid.Row="1" x:Name="gridresult" ItemTemplate="{StaticResource ProductDataTemplate}" ItemsSource="{Binding YoutubeMiniatures}" Margin="0,10,0,0" ItemClick="gridresult_ItemClick" IsItemClickEnabled="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+        <MediaElement Grid.Row="0" x:Name="musicPlayer" AudioCategory="BackgroundCapableMedia" CurrentStateChanged="musicPlayer_CurrentStateChanged" Visibility="Visible" AreTransportControlsEnabled="True"/>
+        
+        <ScrollViewer x:Name="scrollResult" Grid.Row="1" Margin="0,5" ScrollViewer.VerticalScrollMode="Enabled" ScrollViewer.VerticalScrollBarVisibility="Auto" ViewChanged="scrollResult_ViewChanged">
+            <GridView x:Name="gridresult" ItemTemplate="{StaticResource ProductDataTemplate}" ItemsSource="{Binding YoutubeMiniatures}" ItemClick="gridresult_ItemClick" IsItemClickEnabled="True">
                 <GridView.ItemsPanel>
                     <ItemsPanelTemplate>
                         <ItemsWrapGrid Orientation="Horizontal" SizeChanged="ItemsWrapGrid_SizeChanged"/>

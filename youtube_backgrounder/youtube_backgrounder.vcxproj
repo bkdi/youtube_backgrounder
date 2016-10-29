@@ -100,10 +100,10 @@
     <PackageCertificateKeyFile>youtube_backgrounder_TemporaryKey.pfx</PackageCertificateKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\boost_1_60_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\v7;C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\duktape-1.5.1\src;C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\boost_1_60_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\boost_1_60_0;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\duktape-1.5.1\src;C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\boost_1_60_0;C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\duktape-1.5.1\src;C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\boost_1_60_0;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
@@ -121,13 +121,22 @@
     <ClCompile>
       <AdditionalOptions>/bigobj -D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link />
+    <Link>
+      <AdditionalOptions>/nodefaultlib:vccorlibd /nodefaultlib:msvcrtd vccorlibd.lib msvcrtd.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
     </ClCompile>
+    <Link />
+    <Link>
+      <AdditionalOptions>/nodefaultlib:vccorlib /nodefaultlib:msvcrt vccorlib.lib msvcrt.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -142,6 +151,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\Libraries\v7\v7.h" />
     <ClInclude Include="PlayerPage.xaml.h">
       <DependentUpon>PlayerPage.xaml</DependentUpon>
     </ClInclude>
@@ -157,13 +167,15 @@
     </ClInclude>
     <ClInclude Include="tools_http.h" />
     <ClInclude Include="YoutubeExtractor.h" />
-    <ClInclude Include="YoutubeMiniatureData.h" />
+    <ClInclude Include="YoutubeItemData.h" />
+    <ClInclude Include="YoutubeSearch.h" />
     <ClInclude Include="YouTubeSignatureDecrypt.h" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="AppColorSchemes.xaml" />
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -189,6 +201,10 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\Libraries\v7\v7.c">
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsWinRT>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="App.xaml.cpp">
       <DependentUpon>App.xaml</DependentUpon>
     </ClCompile>
@@ -211,6 +227,8 @@
     </ClCompile>
     <ClCompile Include="tools_http.cpp" />
     <ClCompile Include="YoutubeExtractor.cpp" />
+    <ClCompile Include="YoutubeItemData.cpp" />
+    <ClCompile Include="YoutubeSearch.cpp" />
     <ClCompile Include="YouTubeSignatureDecrypt.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

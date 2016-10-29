@@ -1,23 +1,41 @@
 #pragma once
 
-class YoutubeExtractor
+using namespace Windows::Foundation;
+
+ref class YoutubeExtractor sealed
 {
 
 public:
-	YoutubeExtractor(const std::wstring& youtubeGetVideoInfoFile);
-
-	void getVideosUrls();
-	void getVideoUrlByItag(const std::wstring& itag, std::wstring &urlToPlay);
+	YoutubeExtractor(Platform::String^ youtubeVideoId);
+	IAsyncOperation<Platform::String^>^ getVideoUrlByItagAsync(Platform::String^ itag);
 
 private:
-	static const std::wstring START_URL_STRING;
+	struct Url
+	{
+		bool isEncreptedSignature;
+		std::wstring url;
+		std::wstring signature;
+		std::wstring itag;
 
-	const std::wstring getVideoInfoFile;
+		Url() : isEncreptedSignature(false) {}
+	};
+	
+	Platform::String^ videoId;
+	Platform::String^ playerUrl;
 
-	std::vector<std::wstring> rawVideosUrls;
+	std::wstring getVideoInfoFile;
+	std::wstring videoWebpageFile;
 
-	void getUrlsSection(std::wstring &urlsSection);
-	void getRawUrls(std::wstring &urlsSection);
-	void prepareUrl(std::wstring & rawUrltoPlay);
+	std::vector<Url> videosUrls;
+
+	void downloadVideoWebpage();
+	void getVideoConfiguration();
+	void getPlayerUrl(const boost::property_tree::wptree& pt);
+	void getVideosUrls(const boost::property_tree::wptree& pt);
+	void getUrls(const std::wstring& urlsSection);
+	void getUrlByItag(const std::wstring& itag, Url &urlByItag);
+	void unescape(std::wstring & escaped);
+
+	
 };
 

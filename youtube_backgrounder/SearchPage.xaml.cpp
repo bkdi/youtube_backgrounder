@@ -35,20 +35,34 @@ SearchPage::SearchPage()
 
 void SearchPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
-	Platform::String^ title = "tor poznań" /*(safe_cast<NavigationProperties^> (e->Parameter))->param*/;
-	//page = (safe_cast<NavigationProperties^> (e->Parameter))->page;
+	currentSearchedTitle = safe_cast<Platform::String^> (e->Parameter);
+	itemsCollection = ref new YoutubeItemsCollections;
+	gridresult->ItemsSource = itemsCollection->YoutubeMiniatures;
 
+	loadYoutubeItems();
+}
+
+void youtube_backgrounder::SearchPage::loadYoutubeItems()
+{
 	auto httpClient = ref new HttpClient();
-	auto uri = ref new Uri("https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=8&q=" + title + "&type=video&key=AIzaSyCIM4EzNqi1in22f4Z3Ru3iYvLaY8tc3bo");
+
+	Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=" + currentSearchedTitle + L"&type=video&key=AIzaSyCIM4EzNqi1in22f4Z3Ru3iYvLaY8tc3bo";
+	if (!nextPageToken->IsEmpty())
+		url += L"&pageToken=" + nextPageToken;
+
+	auto uri = ref new Uri(url);
 
 	concurrency::create_task(httpClient->GetStringAsync(uri)).then([this](Platform::String^ jsonSearchedList)
 	{
 		std::wstringstream jsonStream(jsonSearchedList->Data());
 		boost::property_tree::wptree pt;
-		auto dataSource = ref new DataSource();
+
 		try
 		{
 			read_json(jsonStream, pt);
+
+			nextPageToken = ref new Platform::String(pt.find(L"nextPageToken")->second.get_value<std::wstring>().c_str());
+
 			auto itemsArray = pt.get_child(L"items");
 			for (const boost::property_tree::wptree::value_type& item : pt.get_child(L"items"))
 			{
@@ -57,47 +71,27 @@ void SearchPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArg
 				Platform::String^ smallThumbnail = ref new Platform::String(item.second.find(L"snippet")->second.find(L"thumbnails")->second.find(L"default")->second.find(L"url")->second.get_value<std::wstring>().c_str());
 				Platform::String^ largeThumbnail = ref new Platform::String(item.second.find(L"snippet")->second.find(L"thumbnails")->second.find(L"high")->second.find(L"url")->second.get_value<std::wstring>().c_str());
 
-				dataSource->AppendItem(videoId, title, smallThumbnail, largeThumbnail);
+				itemsCollection->AppendItem(videoId, title, smallThumbnail, largeThumbnail);
 			}
 		}
-		catch (const boost::property_tree::json_parser_error &e)
+		catch (const boost::property_tree::json_parser_error &)
 		{
 			//TODO:
 		}
-
-		gridresult->ItemsSource = dataSource->YoutubeMiniatures;
 	});
 }
 
 void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e)
 {
-	YoutubeMiniatureData^ youtubeData = safe_cast<YoutubeMiniatureData^> (e->ClickedItem);
+	YoutubeItem^ youtubeItem = safe_cast<YoutubeItem^> (e->ClickedItem);
 
-	auto httpClient = ref new HttpClient();
-
-	auto uri = ref new Uri(L"https://www.youtube.com/get_video_info?&video_id=" + youtubeData->VideoId + L"&el=info&ps=default&eurl=&gl=US&hl=en");
-
-	concurrency::create_task(httpClient->GetStringAsync(uri)).then([this, youtubeData, httpClient](Platform::String^ youtubeGetVideoInfoFile)
+	YoutubeExtractor^ youtubeExtractor = ref new YoutubeExtractor(youtubeItem->VideoId);
+	concurrency::create_task(youtubeExtractor->getVideoUrlByItagAsync(L"22")).then([this](Platform::String^ urlToPlay)
 	{
-		std::wstring urlByItag;
-		
-		YoutubeExtractor youtubeExtractor(youtubeGetVideoInfoFile->Data());
-		youtubeExtractor.getVideosUrls();
-		youtubeExtractor.getVideoUrlByItag(L"22", urlByItag);
-
-		if (!urlByItag.empty())
+		if (!urlToPlay->IsEmpty())
 		{
-			auto uriEmbed = ref new Uri(L"https://www.youtube.com/embed/" + youtubeData->VideoId);
-			concurrency::create_task(httpClient->GetStringAsync(uriEmbed)).then([this, urlByItag](Platform::String^ youtubeEmbedVideoFile)
-			{
-				YouTubeSignatureDecrypt youtubeSignatureDecrypt(youtubeEmbedVideoFile->Data());
-				std::wstring urltoDecrypt = urlByItag;
-				youtubeSignatureDecrypt.decrypt(urltoDecrypt);
-
-				Platform::String^ urlToPlay = ref new Platform::String(urltoDecrypt.c_str());
-				musicPlayer->Source = ref new Uri(urlToPlay);
-				musicPlayer->Play();
-			});
+			musicPlayer->Source = ref new Uri(urlToPlay);
+			musicPlayer->Play();
 		}
 	});
 }
@@ -105,14 +99,29 @@ void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xam
 void youtube_backgrounder::SearchPage::ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
 {
 	ItemsWrapGrid^ itemWrapGrid = safe_cast<ItemsWrapGrid^>(sender);
-
-	for (double d = 480.0; d > 240; d -= 0.1)
+	
+	for (double d = 360.0; d > 200.0; d -= 0.1)
 	{
 		double ratio = e->NewSize.Width / d;
 		if ((ratio - (int)ratio) < 0.001)
 		{
 			itemWrapGrid->ItemWidth = d;
 			break;
+		}
+	}
+}
+
+void youtube_backgrounder::SearchPage::scrollResult_ViewChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^ e)
+{
+	if (!e->IsIntermediate)
+	{
+		auto verticalOffset = scrollResult->VerticalOffset;
+		auto maxVerticalOffset = scrollResult->ScrollableHeight;
+
+		if (maxVerticalOffset < 0 || verticalOffset == maxVerticalOffset)
+		{
+			verticalOffset = 0;
+			loadYoutubeItems();
 		}
 	}
 }

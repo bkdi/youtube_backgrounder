@@ -6,11 +6,14 @@ using namespace Windows::Foundation;
 
 namespace ToolsHttp
 {
-	auto getStrFileAsync(Platform::String^ url)
+	void getStrData(Platform::String^ url, Platform::String^& data)
 	{
 		auto httpClient = ref new HttpClient();
-
 		auto uri = ref new Uri(url);
-		return httpClient->GetStringAsync(uri);
+
+		concurrency::create_task(httpClient->GetStringAsync(uri)).then([&data](Platform::String^ youtubeGetVideoInfoFile)
+		{
+			data = youtubeGetVideoInfoFile;
+		}).wait();
 	}
 }

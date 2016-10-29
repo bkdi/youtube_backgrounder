@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "MainPage.xaml.h"
+#include "SearchPage.xaml.h"
 
 
 using namespace youtube_backgrounder;
@@ -31,17 +32,7 @@ MainPage::MainPage()
 void MainPage::SearchSugesstion(SearchBox^ sender, SearchBoxQuerySubmittedEventArgs^ args)
 {
 	if (sender->QueryText != "")
-	{
-		NavigationProperties^ properties = ref new NavigationProperties;
-		properties->page = this;
-		properties->param = sender->QueryText;
-		SplitViewFrame->Navigate(TypeName(SearchPage::typeid), properties);
-	}
-}
-
-void MainPage::SetPage(Windows::UI::Xaml::Interop::TypeName type, Platform::String^ parameter)
-{
-	SplitViewFrame->Navigate(type, parameter);
+		SplitViewFrame->Navigate(TypeName(SearchPage::typeid), sender->QueryText);
 }
 
 void MainPage::MenuButton_Click(Platform::Object^ sender, RoutedEventArgs^ e)
@@ -54,12 +45,10 @@ void MainPage::MenuButton_Click(Platform::Object^ sender, RoutedEventArgs^ e)
 void MainPage::SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	(safe_cast<RadioButton^> (sender))->IsChecked = true;
-	SetPage(SearchPage::typeid, nullptr);
 }
 
 
 void MainPage::PlayerButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	(safe_cast<RadioButton^> (sender))->IsChecked = true;
-	SetPage(PlayerPage::typeid, nullptr);
 }

@@ -11,6 +11,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="SplitViewStyles.xaml"/>
+                <ResourceDictionary Source="AppColorSchemes.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
@@ -32,11 +33,13 @@
             </StackPanel>
         </SplitView.Pane>
         <SplitView.Content>
-            <Grid>
-                <StackPanel>
-                    <SearchBox SearchHistoryEnabled="False" HorizontalAlignment="Left" Height="40" Margin="30,4,0,4" VerticalAlignment="Top" Width="480" QuerySubmitted="SearchSugesstion" FontSize="20"/>
-                    <Frame x:Name="SplitViewFrame"/>
-                </StackPanel>
+            <Grid Background="{StaticResource BackgroundPageDefault}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <SearchBox Grid.Row="0" SearchHistoryEnabled="False" HorizontalAlignment="Left" Height="40" Margin="30,4,0,4" VerticalAlignment="Top" Width="480" QuerySubmitted="SearchSugesstion" FontSize="20"/>
+                <Frame Grid.Row="1" x:Name="SplitViewFrame"/>
             </Grid>
         </SplitView.Content>
     </SplitView>
