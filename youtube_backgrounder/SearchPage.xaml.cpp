@@ -28,6 +28,9 @@ using namespace Windows::UI::Xaml::Interop;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
+const double SearchPage::minItemWidth = 200.0;
+const double SearchPage::maxItemWidth = 360.0;
+
 SearchPage::SearchPage()
 {
 	InitializeComponent();
@@ -97,12 +100,12 @@ void youtube_backgrounder::SearchPage::ItemsWrapGrid_SizeChanged(Platform::Objec
 {
 	ItemsWrapGrid^ itemWrapGrid = safe_cast<ItemsWrapGrid^>(sender);
 	
-	for (double d = 360.0; d > 200.0; d -= 0.1)
+	for (unsigned int i = 0; ; ++i)
 	{
-		double ratio = e->NewSize.Width / d;
-		if ((ratio - (int)ratio) < 0.001)
+		auto itemWidth = e->NewSize.Width / i;
+		if (itemWidth >= minItemWidth && itemWidth <= maxItemWidth)
 		{
-			itemWrapGrid->ItemWidth = d;
+			itemWrapGrid->ItemWidth = itemWidth;
 			break;
 		}
 	}
@@ -128,23 +131,23 @@ Platform::Object^ youtube_backgrounder::ItemWidthStateConverter::Convert(Platfor
 	bool active = false;
 	double width = safe_cast<double> (value);
 
-	if (parameter != nullptr)
+	if (parameter != nullptr && width <= 360 && width >= 200)
 	{
 		Platform::String^ sName = parameter->ToString();
 
 		/*if (sName == "BigFont")
 		{
-			if (width > 400)
+			if (width > 310)
 				active = true;
 		}
 		else if (sName == "MediumFont")
 		{
-			if (width > 320 && width <= 400)
+			if (width > 250 && width <= 310)
 				active = true;
 		}
 		else if (sName == "SmallFont")
 		{
-			if (width <= 320)
+			if (width <= 250)
 				active = true;
 		}*/
 	}

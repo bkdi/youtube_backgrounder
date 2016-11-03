@@ -40,6 +40,9 @@ namespace youtube_backgrounder
 		void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 
 	private:	
+		static const double minItemWidth;
+		static const double maxItemWidth;
+
 		SearchPageNavParam^ inputParams;
 		Platform::String^ nextPageToken;
 		YoutubeItemsCollections^ itemsCollection;

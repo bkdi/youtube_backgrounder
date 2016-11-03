@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "YouTubeSignatureDecrypt.h"
 #include "tools_http.h"
+#include "v7.h"
 
 using namespace Windows::UI::Xaml::Controls;
 
@@ -24,8 +25,6 @@ std::string ws2s(const std::wstring& wstr)
 	return converterX.to_bytes(wstr);
 }
 
-#include "v7.h"
-#include "duktape.h"
 IAsyncOperation<Platform::String^>^ YouTubeSignatureDecrypt::decryptAsync()
 {
 	return concurrency::create_async([this]()
