@@ -6,6 +6,9 @@
 //------------------------------------------------------------------------------
 #include "pch.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4100) // unreferenced formal parameter
+
 #if defined _DEBUG && !defined DISABLE_XAML_GENERATED_BINDING_DEBUG_OUTPUT
 extern "C" __declspec(dllimport) int __stdcall IsDebuggerPresent();
 #endif
@@ -27,37 +30,32 @@ void ::youtube_backgrounder::SearchPage::Connect(int __connectionId, ::Platform:
 {
     switch (__connectionId)
     {
-        case 2:
-            {
-                this->grid_main = safe_cast<::Windows::UI::Xaml::Controls::Grid^>(__target);
-            }
-            break;
-        case 3:
-            {
-                this->musicPlayer = safe_cast<::Windows::UI::Xaml::Controls::MediaElement^>(__target);
-                (safe_cast<::Windows::UI::Xaml::Controls::MediaElement^>(this->musicPlayer))->CurrentStateChanged += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::youtube_backgrounder::SearchPage::*)
-                    (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&SearchPage::musicPlayer_CurrentStateChanged);
-            }
-            break;
-        case 4:
-            {
-                this->scroll = safe_cast<::Windows::UI::Xaml::Controls::ScrollViewer^>(__target);
-            }
-            break;
-        case 5:
-            {
-                this->gridresult = safe_cast<::Windows::UI::Xaml::Controls::GridView^>(__target);
-                (safe_cast<::Windows::UI::Xaml::Controls::GridView^>(this->gridresult))->ItemClick += ref new ::Windows::UI::Xaml::Controls::ItemClickEventHandler(this, (void (::youtube_backgrounder::SearchPage::*)
-                    (::Platform::Object^, ::Windows::UI::Xaml::Controls::ItemClickEventArgs^))&SearchPage::gridresult_ItemClick);
-            }
-            break;
-        case 6:
-            {
-                ::Windows::UI::Xaml::Controls::ItemsWrapGrid^ element6 = safe_cast<::Windows::UI::Xaml::Controls::ItemsWrapGrid^>(__target);
-                (safe_cast<::Windows::UI::Xaml::Controls::ItemsWrapGrid^>(element6))->SizeChanged += ref new ::Windows::UI::Xaml::SizeChangedEventHandler(this, (void (::youtube_backgrounder::SearchPage::*)
-                    (::Platform::Object^, ::Windows::UI::Xaml::SizeChangedEventArgs^))&SearchPage::ItemsWrapGrid_SizeChanged);
-            }
-            break;
+    case 2:
+        {
+            this->grid_main = safe_cast<::Windows::UI::Xaml::Controls::Grid^>(__target);
+        }
+        break;
+    case 3:
+        {
+            this->scrollResult = safe_cast<::Windows::UI::Xaml::Controls::ScrollViewer^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::ScrollViewer^>(this->scrollResult))->ViewChanged += ref new ::Windows::Foundation::EventHandler<::Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^>(this, (void (::youtube_backgrounder::SearchPage::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^))&SearchPage::scrollResult_ViewChanged);
+        }
+        break;
+    case 4:
+        {
+            this->gridresult = safe_cast<::Windows::UI::Xaml::Controls::GridView^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::GridView^>(this->gridresult))->ItemClick += ref new ::Windows::UI::Xaml::Controls::ItemClickEventHandler(this, (void (::youtube_backgrounder::SearchPage::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::Controls::ItemClickEventArgs^))&SearchPage::gridresult_ItemClick);
+        }
+        break;
+    case 5:
+        {
+            ::Windows::UI::Xaml::Controls::ItemsWrapGrid^ element5 = safe_cast<::Windows::UI::Xaml::Controls::ItemsWrapGrid^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::ItemsWrapGrid^>(element5))->SizeChanged += ref new ::Windows::UI::Xaml::SizeChangedEventHandler(this, (void (::youtube_backgrounder::SearchPage::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::SizeChangedEventArgs^))&SearchPage::ItemsWrapGrid_SizeChanged);
+        }
+        break;
     }
     _contentLoaded = true;
 }
@@ -68,5 +66,7 @@ void ::youtube_backgrounder::SearchPage::Connect(int __connectionId, ::Platform:
     __target;               // unreferenced
     return nullptr;
 }
+
+#pragma warning(pop)
 
 

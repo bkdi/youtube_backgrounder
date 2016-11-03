@@ -6,6 +6,9 @@
 //------------------------------------------------------------------------------
 #include "pch.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4100) // unreferenced formal parameter
+
 #if defined _DEBUG && !defined DISABLE_XAML_GENERATED_BINDING_DEBUG_OUTPUT
 extern "C" __declspec(dllimport) int __stdcall IsDebuggerPresent();
 #endif
@@ -27,13 +30,11 @@ void ::youtube_backgrounder::PlayerPage::Connect(int __connectionId, ::Platform:
 {
     switch (__connectionId)
     {
-        case 1:
-            {
-                this->musicPlayer = safe_cast<::Windows::UI::Xaml::Controls::MediaElement^>(__target);
-                (safe_cast<::Windows::UI::Xaml::Controls::MediaElement^>(this->musicPlayer))->CurrentStateChanged += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::youtube_backgrounder::PlayerPage::*)
-                    (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&PlayerPage::MusicPlayer_CurrentStateChanged);
-            }
-            break;
+    case 1:
+        {
+            this->playerElement = safe_cast<::Windows::UI::Xaml::Controls::MediaPlayerElement^>(__target);
+        }
+        break;
     }
     _contentLoaded = true;
 }
@@ -44,5 +45,7 @@ void ::youtube_backgrounder::PlayerPage::Connect(int __connectionId, ::Platform:
     __target;               // unreferenced
     return nullptr;
 }
+
+#pragma warning(pop)
 
 

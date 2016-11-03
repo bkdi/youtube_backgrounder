@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "youtube_backgrounder", "youtube_backgrounder\youtube_backgrounder.vcxproj", "{FD16E2AD-A0AE-4B04-9524-4F689351352F}"
 EndProject
@@ -27,9 +27,9 @@ Global
 		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|ARM.ActiveCfg = Release|ARM
 		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|ARM.Build.0 = Release|ARM
 		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|ARM.Deploy.0 = Release|ARM
-		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|x64.ActiveCfg = Release|x64
-		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|x64.Build.0 = Release|x64
-		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|x64.Deploy.0 = Release|x64
+		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|x64.ActiveCfg = Debug|x64
+		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|x64.Build.0 = Debug|x64
+		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|x64.Deploy.0 = Debug|x64
 		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|x86.ActiveCfg = Release|Win32
 		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|x86.Build.0 = Release|Win32
 		{FD16E2AD-A0AE-4B04-9524-4F689351352F}.Release|x86.Deploy.0 = Release|Win32

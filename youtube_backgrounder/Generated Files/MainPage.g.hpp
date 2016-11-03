@@ -6,6 +6,9 @@
 //------------------------------------------------------------------------------
 #include "pch.h"
 
+#pragma warning(push)
+#pragma warning(disable: 4100) // unreferenced formal parameter
+
 #if defined _DEBUG && !defined DISABLE_XAML_GENERATED_BINDING_DEBUG_OUTPUT
 extern "C" __declspec(dllimport) int __stdcall IsDebuggerPresent();
 #endif
@@ -27,44 +30,49 @@ void ::youtube_backgrounder::MainPage::Connect(int __connectionId, ::Platform::O
 {
     switch (__connectionId)
     {
-        case 1:
-            {
-                this->MenuSplitView = safe_cast<::Windows::UI::Xaml::Controls::SplitView^>(__target);
-            }
-            break;
-        case 2:
-            {
-                this->MenuButton = safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(__target);
-                (safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(this->MenuButton))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::youtube_backgrounder::MainPage::*)
-                    (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&MainPage::MenuButton_Click);
-            }
-            break;
-        case 3:
-            {
-                this->SearchButton = safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(__target);
-                (safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(this->SearchButton))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::youtube_backgrounder::MainPage::*)
-                    (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&MainPage::SearchButton_Click);
-            }
-            break;
-        case 4:
-            {
-                this->PlayerButton = safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(__target);
-                (safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(this->PlayerButton))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::youtube_backgrounder::MainPage::*)
-                    (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&MainPage::PlayerButton_Click);
-            }
-            break;
-        case 5:
-            {
-                ::Windows::UI::Xaml::Controls::SearchBox^ element5 = safe_cast<::Windows::UI::Xaml::Controls::SearchBox^>(__target);
-                (safe_cast<::Windows::UI::Xaml::Controls::SearchBox^>(element5))->QuerySubmitted += ref new ::Windows::Foundation::TypedEventHandler<::Windows::UI::Xaml::Controls::SearchBox^, ::Windows::UI::Xaml::Controls::SearchBoxQuerySubmittedEventArgs^>(this, (void (::youtube_backgrounder::MainPage::*)
-                    (::Windows::UI::Xaml::Controls::SearchBox^, ::Windows::UI::Xaml::Controls::SearchBoxQuerySubmittedEventArgs^))&MainPage::SearchSugesstion);
-            }
-            break;
-        case 6:
-            {
-                this->SplitViewFrame = safe_cast<::Windows::UI::Xaml::Controls::Frame^>(__target);
-            }
-            break;
+    case 1:
+        {
+            this->MenuSplitView = safe_cast<::Windows::UI::Xaml::Controls::SplitView^>(__target);
+        }
+        break;
+    case 2:
+        {
+            this->MenuButton = safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(this->MenuButton))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::youtube_backgrounder::MainPage::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&MainPage::MenuButton_Click);
+        }
+        break;
+    case 3:
+        {
+            this->SearchButton = safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(this->SearchButton))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::youtube_backgrounder::MainPage::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&MainPage::SearchButton_Click);
+        }
+        break;
+    case 4:
+        {
+            this->PlayerButton = safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::RadioButton^>(this->PlayerButton))->Click += ref new ::Windows::UI::Xaml::RoutedEventHandler(this, (void (::youtube_backgrounder::MainPage::*)
+                (::Platform::Object^, ::Windows::UI::Xaml::RoutedEventArgs^))&MainPage::PlayerButton_Click);
+        }
+        break;
+    case 5:
+        {
+            ::Windows::UI::Xaml::Controls::SearchBox^ element5 = safe_cast<::Windows::UI::Xaml::Controls::SearchBox^>(__target);
+            (safe_cast<::Windows::UI::Xaml::Controls::SearchBox^>(element5))->QuerySubmitted += ref new ::Windows::Foundation::TypedEventHandler<::Windows::UI::Xaml::Controls::SearchBox^, ::Windows::UI::Xaml::Controls::SearchBoxQuerySubmittedEventArgs^>(this, (void (::youtube_backgrounder::MainPage::*)
+                (::Windows::UI::Xaml::Controls::SearchBox^, ::Windows::UI::Xaml::Controls::SearchBoxQuerySubmittedEventArgs^))&MainPage::SearchSugesstion);
+        }
+        break;
+    case 6:
+        {
+            this->PlayerFrame = safe_cast<::Windows::UI::Xaml::Controls::Frame^>(__target);
+        }
+        break;
+    case 7:
+        {
+            this->SearchFrame = safe_cast<::Windows::UI::Xaml::Controls::Frame^>(__target);
+        }
+        break;
     }
     _contentLoaded = true;
 }
@@ -75,5 +83,7 @@ void ::youtube_backgrounder::MainPage::Connect(int __connectionId, ::Platform::O
     __target;               // unreferenced
     return nullptr;
 }
+
+#pragma warning(pop)
 
 
