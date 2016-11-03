@@ -7,7 +7,7 @@
 
 #include "PlayerPage.g.h"
 
-using namespace Windows::Media;
+using namespace Windows::Media::Playback;
 
 namespace youtube_backgrounder
 {
@@ -24,12 +24,6 @@ namespace youtube_backgrounder
 		void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 
 	private:
-		SystemMediaTransportControls^ systemControls;
-
-		void InitializeTransportControls();
-		void SystemControls_ButtonPressed(SystemMediaTransportControls^ sender, SystemMediaTransportControlsButtonPressedEventArgs^ args);
-		void PlayMedia();
-		void PauseMedia();
-		void MusicPlayer_CurrentStateChanged(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		MediaPlayer^ player;
 	};
 }
