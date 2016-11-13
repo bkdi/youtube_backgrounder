@@ -9,6 +9,7 @@
 
 #include "YoutubeExtractor.h"
 #include "YouTubeSignatureDecrypt.h"
+#include "Settings.h"
 
 using namespace youtube_backgrounder;
 
@@ -39,6 +40,7 @@ SearchPage::SearchPage()
 void SearchPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
 	inputParams = safe_cast<SearchPageNavParam^> (e->Parameter);
+
 	itemsCollection = ref new YoutubeItemsCollections;
 	gridresult->ItemsSource = itemsCollection->YoutubeMiniatures;
 
@@ -88,8 +90,9 @@ void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xam
 {
 	YoutubeItem^ youtubeItem = safe_cast<YoutubeItem^> (e->ClickedItem);
 
+	YoutubeQualityItag preferedQuality = safe_cast<YoutubeQualityItag> (SettingsHelper::getPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY));
 	YoutubeExtractor^ youtubeExtractor = ref new YoutubeExtractor(youtubeItem->VideoId);
-	concurrency::create_task(youtubeExtractor->getVideoUrlByItagAsync(L"22")).then([this](Platform::String^ urlToPlay)
+	concurrency::create_task(youtubeExtractor->getVideoUrlByItagAsync(preferedQuality)).then([this](Platform::String^ urlToPlay)
 	{
 		if (!urlToPlay->IsEmpty())
 			inputParams->playerFrame->Navigate(TypeName(PlayerPage::typeid), urlToPlay);

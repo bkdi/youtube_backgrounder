@@ -6,6 +6,7 @@
 #include "pch.h"
 #include "MainPage.xaml.h"
 #include "SearchPage.xaml.h"
+#include "SettingsPage.xaml.h"
 
 
 using namespace youtube_backgrounder;

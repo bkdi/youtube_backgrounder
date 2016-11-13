@@ -7,11 +7,11 @@ YoutubeExtractor::YoutubeExtractor(Platform::String^ youtubeVideoId) : videoId(y
 {
 }
 
-IAsyncOperation<Platform::String^>^ YoutubeExtractor::getVideoUrlByItagAsync(Platform::String^ itag)
+IAsyncOperation<Platform::String^>^ YoutubeExtractor::getVideoUrlByItagAsync(YoutubeQualityItag itag)
 {
-	return concurrency::create_async([this, itag]()
+	return concurrency::create_async([this, &itag]()
 	{
-		std::wstring itagValue = itag->Data();
+		std::wstring itagValue = std::to_wstring(safe_cast<unsigned int> (itag));
 		downloadVideoWebpage();
 		getVideoConfiguration();
 

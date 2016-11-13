@@ -29,6 +29,9 @@
     </ClCompile>
     <ClCompile Include="YoutubeSearch.cpp" />
     <ClCompile Include="YoutubeItemData.cpp" />
+    <ClCompile Include="SettingsPage.xaml.cpp" />
+    <ClCompile Include="YoutubeQuality.cpp" />
+    <ClCompile Include="Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -44,6 +47,9 @@
     </ClInclude>
     <ClInclude Include="YoutubeSearch.h" />
     <ClInclude Include="YoutubeItemData.h" />
+    <ClInclude Include="SettingsPage.xaml.h" />
+    <ClInclude Include="YoutubeQuality.h" />
+    <ClInclude Include="Settings.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -80,5 +86,6 @@
     <Page Include="SearchPage.xaml" />
     <Page Include="PlayerPage.xaml" />
     <Page Include="AppColorSchemes.xaml" />
+    <Page Include="SettingsPage.xaml" />
   </ItemGroup>
 </Project>

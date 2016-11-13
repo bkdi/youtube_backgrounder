@@ -1,0 +1,28 @@
+﻿<Page
+    x:Class="youtube_backgrounder.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:youtube_backgrounder"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <local:YoutubeQualityCollections/>
+    </Page.DataContext>
+
+    <StackPanel Background="LightGray">
+        <TextBlock Text="Settings" FontSize="25" Margin="10,0,0,10"/>
+        <TextBlock Text="Choose prefered video quality" FontSize="15"/>
+        <ComboBox x:Name="QualityCombo" Margin="0,2,0,10" MinWidth="150" FocusVisualSecondaryBrush="White" Background="Transparent" ItemsSource="{Binding YoutubeQualities}" SelectionChanged="QualityCombo_SelectionChanged">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Path=Name}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <TextBlock Text="Can play better quality than prefered" FontSize="15"/>
+        <ToggleSwitch OnContent="Yes" OffContent="No" Margin="0,-8, 0, 0"/>
+        <TextBlock Text="Play only audio" FontSize="15"/>
+        <ToggleSwitch OnContent="Only audio" OffContent="Audio &amp; video" Margin="0,-8, 0, 0"/>
+    </StackPanel>
+</Page>

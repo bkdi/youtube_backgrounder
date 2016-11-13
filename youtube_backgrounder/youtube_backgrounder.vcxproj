@@ -177,9 +177,14 @@
     <ClInclude Include="SearchPage.xaml.h">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="SettingsPage.xaml.h">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </ClInclude>
     <ClInclude Include="tools_http.h" />
     <ClInclude Include="YoutubeExtractor.h" />
     <ClInclude Include="YoutubeItemData.h" />
+    <ClInclude Include="YoutubeQuality.h" />
     <ClInclude Include="YoutubeSearch.h" />
     <ClInclude Include="YouTubeSignatureDecrypt.h" />
   </ItemGroup>
@@ -193,6 +198,9 @@
     </Page>
     <Page Include="PlayerPage.xaml" />
     <Page Include="SearchPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SettingsPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SplitViewStyles.xaml" />
@@ -241,9 +249,14 @@
     <ClCompile Include="SearchPage.xaml.cpp">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </ClCompile>
+    <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="SettingsPage.xaml.cpp">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </ClCompile>
     <ClCompile Include="tools_http.cpp" />
     <ClCompile Include="YoutubeExtractor.cpp" />
     <ClCompile Include="YoutubeItemData.cpp" />
+    <ClCompile Include="YoutubeQuality.cpp" />
     <ClCompile Include="YoutubeSearch.cpp" />
     <ClCompile Include="YouTubeSignatureDecrypt.cpp" />
   </ItemGroup>

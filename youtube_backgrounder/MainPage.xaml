@@ -18,28 +18,50 @@
 
     <SplitView x:Name="MenuSplitView" DisplayMode="CompactOverlay" IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="200" PaneBackground="{ThemeResource SplitViewBackgroundBrush}">
         <SplitView.Pane>
-            <StackPanel>
-                <RadioButton x:Name="MenuButton" Style="{StaticResource SplitViewMenuButtonStyle}" Click="MenuButton_Click"/>
-
-                <RadioButton x:Name="SearchButton" Tag="&#xE71E;" Content="Search" Style="{StaticResource SplitViewNavButtonStyle}" IsChecked="True" Click="SearchButton_Click" />
-
-                <RadioButton x:Name="PlayerButton" Tag="&#xE768;" Content="Play" Style="{StaticResource SplitViewNavButtonStyle}" Click="PlayerButton_Click"/>
-
-                <!-- Settings button -->
-                <RadioButton Tag="" Content="Settings" Style="{StaticResource SplitViewNavButtonStyle}" />
-
-                <!-- About button -->
-                <RadioButton Tag="" Content="About" Style="{StaticResource SplitViewNavButtonStyle}" />
-            </StackPanel>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <RadioButton Grid.Row="0" x:Name="MenuButton" Style="{StaticResource SplitViewMenuButtonStyle}" Click="MenuButton_Click"/>
+                <RadioButton Grid.Row="1" x:Name="SearchButton" Tag="&#xE71E;" Content="Search" Style="{StaticResource SplitViewNavButtonStyle}" IsChecked="True" Click="SearchButton_Click" />
+                <RadioButton Grid.Row="2" x:Name="PlayerButton" Tag="&#xE768;" Content="Play" Style="{StaticResource SplitViewNavButtonStyle}" Click="PlayerButton_Click"/>
+                <Button Grid.Row="4" x:Name="SettingsButton" Tag="&#59155;" Content="Settings" Style="{StaticResource SplitViewButtonStyle}">
+                    <Button.Flyout>
+                        <Flyout x:Name="SettingsFlyout" Placement="Full">
+                            <Flyout.FlyoutPresenterStyle>
+                                <Style TargetType="FlyoutPresenter">
+                                    <Setter Property="Background" Value="LightGray" />
+                                    <Setter Property="BorderThickness" Value="2"/>
+                                    <Setter Property="BorderBrush" Value="Black"/>
+                                    <Setter Property="Margin" Value="0"/>
+                                </Style>
+                            </Flyout.FlyoutPresenterStyle>
+                            <Frame x:Name="SettingsFrame" SourcePageType="local:SettingsPage"/>
+                        </Flyout>
+                    </Button.Flyout>
+                </Button>
+                <Button Grid.Row="5" Tag="" Content="About" Style="{StaticResource SplitViewButtonStyle}" />
+            </Grid>
         </SplitView.Pane>
         <SplitView.Content>
-            <Grid Background="{StaticResource BackgroundPageDefault}">
+            <Grid x:Name="MainGrid" Background="{StaticResource BackgroundPageDefault}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <SearchBox Grid.Row="0" SearchHistoryEnabled="False" HorizontalAlignment="Left" Height="40" Margin="30,4,0,4" VerticalAlignment="Top" Width="480" QuerySubmitted="SearchSugesstion" FontSize="20"/>
+
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MaxWidth="500"/>
+                    </Grid.ColumnDefinitions>
+                    <SearchBox PlaceholderText="Enter title..." SearchHistoryEnabled="False" HorizontalAlignment="Stretch" Height="40" FontSize="20" Margin="30,4,50,4" QuerySubmitted="SearchSugesstion"/>
+                </Grid>
                 <Frame Grid.Row="1" x:Name="PlayerFrame"/>
                 <Frame Grid.Row="2" x:Name="SearchFrame"/>
             </Grid>

@@ -1,4 +1,7 @@
 #pragma once
+#include "YoutubeQuality.h"
+
+using namespace youtube_backgrounder;
 
 using namespace Windows::Foundation;
 
@@ -7,7 +10,7 @@ ref class YoutubeExtractor sealed
 
 public:
 	YoutubeExtractor(Platform::String^ youtubeVideoId);
-	IAsyncOperation<Platform::String^>^ getVideoUrlByItagAsync(Platform::String^ itag);
+	IAsyncOperation<Platform::String^>^ getVideoUrlByItagAsync(YoutubeQualityItag itag);
 
 private:
 	struct Url
@@ -35,7 +38,5 @@ private:
 	void getUrls(const std::wstring& urlsSection);
 	void getUrlByItag(const std::wstring& itag, Url &urlByItag);
 	void unescape(std::wstring & escaped);
-
-	
 };
 

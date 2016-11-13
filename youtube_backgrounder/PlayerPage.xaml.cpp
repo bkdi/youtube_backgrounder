@@ -73,20 +73,20 @@ void PlayerPage::MusicPlayer_CurrentStateChanged(Platform::Object^ sender, Windo
 {
 	switch (musicPlayer->CurrentState)
 	{
-	case MediaElementState::Playing:
-		systemControls->PlaybackStatus = MediaPlaybackStatus::Playing;
-		break;
-	case MediaElementState::Paused:
-		systemControls->PlaybackStatus = MediaPlaybackStatus::Paused;
-		break;
-	case MediaElementState::Stopped:
-		systemControls->PlaybackStatus = MediaPlaybackStatus::Stopped;
-		break;
-	case MediaElementState::Closed:
-		systemControls->PlaybackStatus = MediaPlaybackStatus::Closed;
-		break;
-	default:
-		break;
+		case MediaElementState::Playing:
+			systemControls->PlaybackStatus = MediaPlaybackStatus::Playing;
+			break;
+		case MediaElementState::Paused:
+			systemControls->PlaybackStatus = MediaPlaybackStatus::Paused;
+			break;
+		case MediaElementState::Stopped:
+			systemControls->PlaybackStatus = MediaPlaybackStatus::Stopped;
+			break;
+		case MediaElementState::Closed:
+			systemControls->PlaybackStatus = MediaPlaybackStatus::Closed;
+			break;
+		default:
+			break;
 	}
 }
 
@@ -95,8 +95,5 @@ void PlayerPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArg
 	Platform::String^ url = safe_cast<Platform::String^> (e->Parameter);
 
 	if (!url->IsEmpty())
-	{
 		musicPlayer->Source = ref new Uri(url);
-		musicPlayer->Play();
-	}
 }
