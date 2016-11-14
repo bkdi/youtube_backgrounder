@@ -3,20 +3,19 @@
 #include "tools_http.h"
 #include "YoutubeSignatureDecrypt.h"
 
-YoutubeExtractor::YoutubeExtractor(Platform::String^ youtubeVideoId) : videoId(youtubeVideoId)
+YoutubeExtractor::YoutubeExtractor(Platform::String^ youtubeVideoId, YoutubeQualityItag youtubePreferedQuality) : videoId(youtubeVideoId), preferedQuality(youtubePreferedQuality)
 {
 }
 
-IAsyncOperation<Platform::String^>^ YoutubeExtractor::getVideoUrlByItagAsync(YoutubeQualityItag itag)
+IAsyncOperation<Platform::String^>^ YoutubeExtractor::getVideoUrlByItagAsync()
 {
-	return concurrency::create_async([this, &itag]()
+	return concurrency::create_async([this]()
 	{
-		std::wstring itagValue = std::to_wstring(safe_cast<unsigned int> (itag));
 		downloadVideoWebpage();
 		getVideoConfiguration();
 
 		Url url;
-		getUrlByItag(itagValue, url);
+		getUrlByItag(url);
 		Platform::String^ urlToPlay = ref new Platform::String(url.url.c_str());
 		if (url.isEncreptedSignature)
 		{
@@ -88,14 +87,24 @@ void YoutubeExtractor::getUrls(const std::wstring& urlsSection)
 	}
 }
 
-void YoutubeExtractor::getUrlByItag(const std::wstring& itag, Url &urlByItag)
+void YoutubeExtractor::getUrlByItag(Url &urlByItag)
 {
-	for (auto url : videosUrls)
+	bool bFound = false;
+
+	//wyszukiwanie preferowanej jakoœci materia³u lub gorszej
+	for (auto it = std::find(vecSortedQualities.crbegin(), vecSortedQualities.crend(), preferedQuality); 
+		it != vecSortedQualities.crend() && !bFound; ++it)
 	{
-		if (url.itag == itag)
+		std::wstring itagStr = std::to_wstring(safe_cast<unsigned int> (*it));
+
+		for (auto url : videosUrls)
 		{
-			urlByItag = url;
-			break;
+			if (url.itag == itagStr)
+			{
+				urlByItag = url;
+				bFound = true;
+				break;
+			}
 		}
 	}
 }

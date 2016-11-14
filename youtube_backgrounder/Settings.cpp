@@ -6,6 +6,15 @@ using namespace Windows::Storage;
 
 namespace youtube_backgrounder
 {
+	namespace Settings
+	{
+		Platform::String^ const MATERIAL = L"Material";
+		namespace Material
+		{
+			Platform::String^ const PREFEREDQUALITY = L"PreferedQuality";
+		}
+	}
+
 	namespace SettingsHelper
 	{
 		bool existValue(Platform::String^ compositeName, Platform::String^ propertyName)

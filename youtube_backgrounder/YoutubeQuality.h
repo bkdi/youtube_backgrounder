@@ -12,6 +12,8 @@ namespace youtube_backgrounder
 		High_720p_HD = 22
 	};
 
+	extern const std::vector<YoutubeQualityItag> vecSortedQualities;
+
 	[Windows::UI::Xaml::Data::Bindable]
 	public ref class YoutubeQualityItem sealed
 	{

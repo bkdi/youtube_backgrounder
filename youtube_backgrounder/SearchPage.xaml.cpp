@@ -91,8 +91,8 @@ void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xam
 	YoutubeItem^ youtubeItem = safe_cast<YoutubeItem^> (e->ClickedItem);
 
 	YoutubeQualityItag preferedQuality = safe_cast<YoutubeQualityItag> (SettingsHelper::getPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY));
-	YoutubeExtractor^ youtubeExtractor = ref new YoutubeExtractor(youtubeItem->VideoId);
-	concurrency::create_task(youtubeExtractor->getVideoUrlByItagAsync(preferedQuality)).then([this](Platform::String^ urlToPlay)
+	YoutubeExtractor^ youtubeExtractor = ref new YoutubeExtractor(youtubeItem->VideoId, preferedQuality);
+	concurrency::create_task(youtubeExtractor->getVideoUrlByItagAsync()).then([this](Platform::String^ urlToPlay)
 	{
 		if (!urlToPlay->IsEmpty())
 			inputParams->playerFrame->Navigate(TypeName(PlayerPage::typeid), urlToPlay);

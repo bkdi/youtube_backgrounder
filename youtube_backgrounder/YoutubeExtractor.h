@@ -9,8 +9,8 @@ ref class YoutubeExtractor sealed
 {
 
 public:
-	YoutubeExtractor(Platform::String^ youtubeVideoId);
-	IAsyncOperation<Platform::String^>^ getVideoUrlByItagAsync(YoutubeQualityItag itag);
+	YoutubeExtractor(Platform::String^ youtubeVideoId, YoutubeQualityItag youtubePreferedQuality);
+	IAsyncOperation<Platform::String^>^ getVideoUrlByItagAsync();
 
 private:
 	struct Url
@@ -23,6 +23,7 @@ private:
 		Url() : isEncreptedSignature(false) {}
 	};
 	
+	YoutubeQualityItag preferedQuality;
 	Platform::String^ videoId;
 	Platform::String^ playerUrl;
 
@@ -36,7 +37,7 @@ private:
 	void getPlayerUrl(const boost::property_tree::wptree& pt);
 	void getVideosUrls(const boost::property_tree::wptree& pt);
 	void getUrls(const std::wstring& urlsSection);
-	void getUrlByItag(const std::wstring& itag, Url &urlByItag);
+	void getUrlByItag(Url &urlByItag);
 	void unescape(std::wstring & escaped);
 };
 

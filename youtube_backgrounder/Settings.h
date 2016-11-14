@@ -4,10 +4,10 @@ namespace youtube_backgrounder
 {
 	namespace Settings
 	{
-		static Platform::String^ MATERIAL = L"Material";
+		extern Platform::String^ const MATERIAL;
 		namespace Material
 		{
-			static Platform::String^ PREFEREDQUALITY = L"PreferedQuality";
+			extern Platform::String^ const PREFEREDQUALITY;
 		}
 	}
 

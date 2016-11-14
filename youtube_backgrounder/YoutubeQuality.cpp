@@ -4,6 +4,8 @@
 
 using namespace youtube_backgrounder;
 
+const std::vector<YoutubeQualityItag> youtube_backgrounder::vecSortedQualities = { YoutubeQualityItag::Low_240p, YoutubeQualityItag::Medium_360p, YoutubeQualityItag::High_720p_HD };
+
 YoutubeQualityItem::YoutubeQualityItem(YoutubeQualityItag youtubeQuality)
 {
 	Quality = youtubeQuality;

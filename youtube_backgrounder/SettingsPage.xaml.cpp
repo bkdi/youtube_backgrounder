@@ -27,9 +27,8 @@ SettingsPage::SettingsPage()
 	InitializeComponent();
 
 	YoutubeQualityCollections^ itemsCollection = ref new YoutubeQualityCollections;
-	itemsCollection->AppendItem(YoutubeQualityItag::Low_240p);
-	itemsCollection->AppendItem(YoutubeQualityItag::Medium_360p);
-	itemsCollection->AppendItem(YoutubeQualityItag::High_720p_HD);
+	for(auto quality : vecSortedQualities)
+		itemsCollection->AppendItem(quality);
 	QualityCombo->ItemsSource = itemsCollection->YoutubeQualities;
 
 	if (!SettingsHelper::existValue(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY))
