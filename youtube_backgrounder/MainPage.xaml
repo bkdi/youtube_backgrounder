@@ -60,7 +60,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" MaxWidth="500"/>
                     </Grid.ColumnDefinitions>
-                    <SearchBox PlaceholderText="Enter title..." SearchHistoryEnabled="False" HorizontalAlignment="Stretch" Height="40" FontSize="20" Margin="30,4,50,4" QuerySubmitted="SearchSugesstion"/>
+                    <AutoSuggestBox PlaceholderText="Enter title..." VerticalAlignment="Center"  HorizontalAlignment="Stretch" Height="32" Margin="30,4,50,4" QueryIcon="Find" MaxSuggestionListHeight="185" SuggestionChosen="AutoSuggestBox_SuggestionChosen" TextChanged="AutoSuggestBox_TextChanged" QuerySubmitted="AutoSuggestBox_QuerySubmitted"/>
                 </Grid>
                 <Frame Grid.Row="1" x:Name="PlayerFrame"/>
                 <Frame Grid.Row="2" x:Name="SearchFrame"/>

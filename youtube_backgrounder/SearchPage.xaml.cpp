@@ -68,7 +68,6 @@ void youtube_backgrounder::SearchPage::loadYoutubeItems()
 
 			nextPageToken = ref new Platform::String(pt.find(L"nextPageToken")->second.get_value<std::wstring>().c_str());
 
-			auto itemsArray = pt.get_child(L"items");
 			for (const boost::property_tree::wptree::value_type& item : pt.get_child(L"items"))
 			{
 				Platform::String^ videoId = ref new Platform::String(item.second.find(L"id")->second.find(L"videoId")->second.get_value<std::wstring>().c_str());
