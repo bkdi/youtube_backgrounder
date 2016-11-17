@@ -3,7 +3,8 @@
 #include "tools_http.h"
 #include "YoutubeSignatureDecrypt.h"
 
-YoutubeExtractor::YoutubeExtractor(Platform::String^ youtubeVideoId, YoutubeQualityItag youtubePreferedQuality) : videoId(youtubeVideoId), preferedQuality(youtubePreferedQuality)
+YoutubeExtractor::YoutubeExtractor(Platform::String^ youtubeVideoId, YoutubeQualityItag youtubePreferedQuality, bool isOnlyAudio)
+	: videoId(youtubeVideoId), preferedQuality(youtubePreferedQuality), onlyAudio(isOnlyAudio)
 {
 }
 
@@ -55,7 +56,10 @@ void YoutubeExtractor::getPlayerUrl(const boost::property_tree::wptree& pt)
 void YoutubeExtractor::getVideosUrls(const boost::property_tree::wptree& pt)
 {
 	auto item = pt.get_child(L"args");
-	getUrls(item.find(L"url_encoded_fmt_stream_map")->second.get_value<std::wstring>());
+	if(onlyAudio)
+		getUrls(item.find(L"adaptive_fmts")->second.get_value<std::wstring>());
+	else
+		getUrls(item.find(L"url_encoded_fmt_stream_map")->second.get_value<std::wstring>());
 }
 
 void YoutubeExtractor::getUrls(const std::wstring& urlsSection)
@@ -91,9 +95,15 @@ void YoutubeExtractor::getUrlByItag(Url &urlByItag)
 {
 	bool bFound = false;
 
+	const std::vector<YoutubeQualityItag>* vec; 
+	if (onlyAudio)
+		vec = &sortedDASH_AudioQualities;
+	else
+		vec = &sortedNonDASH_2DVideoQualities;
+
 	//wyszukiwanie preferowanej jakoœci materia³u lub gorszej
-	for (auto it = std::find(vecSortedQualities.crbegin(), vecSortedQualities.crend(), preferedQuality); 
-		it != vecSortedQualities.crend() && !bFound; ++it)
+	for (auto it = std::find(vec->crbegin(), vec->crend(), preferedQuality);
+		it != vec->crend() && !bFound; ++it)
 	{
 		std::wstring itagStr = std::to_wstring(safe_cast<unsigned int> (*it));
 

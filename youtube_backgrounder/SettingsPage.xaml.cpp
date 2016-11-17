@@ -27,34 +27,47 @@ SettingsPage::SettingsPage()
 	InitializeComponent();
 
 	YoutubeQualityCollections^ itemsCollection = ref new YoutubeQualityCollections;
-	for(auto quality : vecSortedQualities)
+	for(auto quality : sortedQualities)
 		itemsCollection->AppendItem(quality);
-	QualityCombo->ItemsSource = itemsCollection->YoutubeQualities;
+	MaterialQualityCombo->ItemsSource = itemsCollection->YoutubeQualities;
 
 	if (!SettingsHelper::existValue(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY))
 	{
-		QualityCombo->SelectedIndex = 2;
-		SettingsHelper::setPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY, safe_cast<unsigned int> (YoutubeQualityItag::High_720p_HD));
+		MaterialQualityCombo->SelectedIndex = 3;
+		SettingsHelper::setPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY, safe_cast<unsigned int> (YoutubeQuality::High));
 	}
 	else
 	{
-		YoutubeQualityItag preferedQuality = safe_cast<YoutubeQualityItag> (SettingsHelper::getPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY));
+		auto preferedQuality = safe_cast<YoutubeQuality> (SettingsHelper::getPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY));
 
 		unsigned index = 0;
 		for (auto item : itemsCollection->YoutubeQualities)
 		{
 			if (item->Quality == preferedQuality)
 			{
-				QualityCombo->SelectedIndex = index;
+				MaterialQualityCombo->SelectedIndex = index;
 				break;
 			}
 			++index;
 		}
 	}
+
+	if (!SettingsHelper::existValue(Settings::MATERIAL, Settings::Material::ONLYAUDIO))
+	{
+		OnlyAutoTypeSwitch->IsOn = false;
+		SettingsHelper::setPropertyBoolean(Settings::MATERIAL, Settings::Material::ONLYAUDIO, false);
+	}
+	else
+		OnlyAutoTypeSwitch->IsOn = SettingsHelper::getPropertyBoolean(Settings::MATERIAL, Settings::Material::ONLYAUDIO);
 }
 
-void SettingsPage::QualityCombo_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e)
+void SettingsPage::OnlyAutoTypeSwitch_Toggled(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	auto item = safe_cast<YoutubeQualityItem^> (QualityCombo->Items->GetAt(QualityCombo->SelectedIndex));
+	SettingsHelper::setPropertyBoolean(Settings::MATERIAL, Settings::Material::ONLYAUDIO, OnlyAutoTypeSwitch->IsOn);
+}
+
+void SettingsPage::MaterialQualityCombo_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e)
+{
+	auto item = safe_cast<YoutubeQualityItem^> (MaterialQualityCombo->Items->GetAt(MaterialQualityCombo->SelectedIndex));
 	SettingsHelper::setPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY, safe_cast<unsigned int> (item->Quality));
 }

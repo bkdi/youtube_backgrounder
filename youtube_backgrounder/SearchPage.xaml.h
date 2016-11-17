@@ -81,7 +81,6 @@ namespace youtube_backgrounder
 			return (double)obj->GetValue(ActualWidthProperty);
 		}
 
-
 		static void SetActualWidth(DependencyObject^ obj, double value)
 		{
 			obj->SetValue(ActualWidthProperty, value);
@@ -123,7 +122,6 @@ namespace youtube_backgrounder
 				return;
 
 			auto width = e->NewSize.Width;
-			auto width2 = element->Width;
 
 			SetActualWidth(element, width);
 		}

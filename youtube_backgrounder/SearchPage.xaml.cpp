@@ -87,10 +87,19 @@ void youtube_backgrounder::SearchPage::loadYoutubeItems()
 
 void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e)
 {
-	YoutubeItem^ youtubeItem = safe_cast<YoutubeItem^> (e->ClickedItem);
+	auto youtubeItem = safe_cast<YoutubeItem^> (e->ClickedItem);
 
-	YoutubeQualityItag preferedQuality = safe_cast<YoutubeQualityItag> (SettingsHelper::getPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY));
-	YoutubeExtractor^ youtubeExtractor = ref new YoutubeExtractor(youtubeItem->VideoId, preferedQuality);
+	auto preferedQuality = safe_cast<YoutubeQuality> (SettingsHelper::getPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY));
+	YoutubeQualityItag preferedItag;
+	IVector<YoutubeQualityItag>^ sortedQualities;
+
+	auto onlyAuto = SettingsHelper::getPropertyBoolean(Settings::MATERIAL, Settings::Material::ONLYAUDIO);
+	if (onlyAuto)
+		preferedItag = YoutubeQualityItem::qualityTo_DASH_Audio_Quality(preferedQuality);
+	else
+		preferedItag = YoutubeQualityItem::qualityTo_Non_DASH_2D_Quality(preferedQuality);
+
+	auto youtubeExtractor = ref new YoutubeExtractor(youtubeItem->VideoId, preferedItag, onlyAuto);
 	concurrency::create_task(youtubeExtractor->getVideoUrlByItagAsync()).then([this](Platform::String^ urlToPlay)
 	{
 		if (!urlToPlay->IsEmpty())
@@ -98,17 +107,20 @@ void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xam
 	});
 }
 
-void youtube_backgrounder::SearchPage::ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
+void SearchPage::ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
 {
 	ItemsWrapGrid^ itemWrapGrid = safe_cast<ItemsWrapGrid^>(sender);
-	
-	for (unsigned int i = 0; ; ++i)
+
+	if (e->NewSize.Width != e->PreviousSize.Width)
 	{
-		auto itemWidth = e->NewSize.Width / i;
-		if (itemWidth >= minItemWidth && itemWidth <= maxItemWidth)
+		for (unsigned int i = 0; ; ++i)
 		{
-			itemWrapGrid->ItemWidth = itemWidth;
-			break;
+			auto itemWidth = e->NewSize.Width / i;
+			if (itemWidth >= minItemWidth && itemWidth <= maxItemWidth)
+			{
+				itemWrapGrid->ItemWidth = itemWidth;
+				break;
+			}
 		}
 	}
 }

@@ -9,7 +9,7 @@ ref class YoutubeExtractor sealed
 {
 
 public:
-	YoutubeExtractor(Platform::String^ youtubeVideoId, YoutubeQualityItag youtubePreferedQuality);
+	YoutubeExtractor(Platform::String^ youtubeVideoId, YoutubeQualityItag youtubePreferedQuality, bool isOnlyAudio);
 	IAsyncOperation<Platform::String^>^ getVideoUrlByItagAsync();
 
 private:
@@ -27,6 +27,7 @@ private:
 	Platform::String^ videoId;
 	Platform::String^ playerUrl;
 
+	bool onlyAudio;
 	std::wstring getVideoInfoFile;
 	std::wstring videoWebpageFile;
 
