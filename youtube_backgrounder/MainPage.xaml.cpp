@@ -54,6 +54,8 @@ void youtube_backgrounder::MainPage::AutoSuggestBox_QuerySubmitted(Windows::UI::
 {
 	if (!sender->Text->IsEmpty())
 	{
+		sender->IsSuggestionListOpen = false;
+
 		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame);
 		SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
 	}
