@@ -12,7 +12,6 @@ const std::vector<YoutubeQualityItag> youtube_backgrounder::sortedNonDASH_2DVide
 	YoutubeQualityItag::Non_DASH_2D_3GP_Low,	
 	YoutubeQualityItag::Non_DASH_2D_FLV_Low,	
 	YoutubeQualityItag::Non_DASH_2D_MP4_Medium,	
-	YoutubeQualityItag::Non_DASH_2D_WebM_Medium,	
 	YoutubeQualityItag::Non_DASH_2D_MP4_High		
 };
 
@@ -20,7 +19,6 @@ const std::vector<YoutubeQualityItag> youtube_backgrounder::sortedDASH_AudioQual
 {
 	YoutubeQualityItag::DASH_Audio_WebM_VeryLow,
 	YoutubeQualityItag::DASH_Audio_WebM_Low,		
-	YoutubeQualityItag::DASH_Audio_WebM_Medium,	
 	YoutubeQualityItag::DASH_Audio_M4A_Medium,	
 	YoutubeQualityItag::DASH_Audio_WebM_High		
 };
