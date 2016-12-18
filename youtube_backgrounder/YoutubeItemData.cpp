@@ -14,6 +14,11 @@ namespace youtube_backgrounder
 		vec->Append(ref new YoutubeItem(VideoIdStr, TitleStr, SmallThumbnailStr, LargeThumbnailStr));
 	}
 
+	void YoutubeItemsCollections::AppendItem(YoutubeItem^ item)
+	{
+		vec->Append(item);
+	}
+
 	void YoutubeItemsCollections::Clear()
 	{
 		vec->Clear();

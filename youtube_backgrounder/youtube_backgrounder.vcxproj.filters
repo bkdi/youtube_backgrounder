@@ -32,6 +32,13 @@
     <ClCompile Include="SettingsPage.xaml.cpp" />
     <ClCompile Include="YoutubeQuality.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="YoutubePlaylist.cpp" />
+    <ClCompile Include="PlaylistsPage.xaml.cpp" />
+    <ClCompile Include="ContentDialogTextInput.xaml.cpp" />
+    <ClCompile Include="GridViewItemControl.xaml.cpp" />
+    <ClCompile Include="ContentDialogAddToPlaylist.xaml.cpp" />
+    <ClCompile Include="PlaylistListViewItemControl.xaml.cpp" />
+    <ClCompile Include="PlaylistIO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -50,6 +57,13 @@
     <ClInclude Include="SettingsPage.xaml.h" />
     <ClInclude Include="YoutubeQuality.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="YoutubePlaylist.h" />
+    <ClInclude Include="PlaylistsPage.xaml.h" />
+    <ClInclude Include="ContentDialogTextInput.xaml.h" />
+    <ClInclude Include="GridViewItemControl.xaml.h" />
+    <ClInclude Include="ContentDialogAddToPlaylist.xaml.h" />
+    <ClInclude Include="PlaylistListViewItemControl.xaml.h" />
+    <ClInclude Include="PlaylistIO.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -73,6 +87,12 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Assets\photo.jpeg">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\photo2.jpg">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />
@@ -87,5 +107,11 @@
     <Page Include="PlayerPage.xaml" />
     <Page Include="AppColorSchemes.xaml" />
     <Page Include="SettingsPage.xaml" />
+    <Page Include="PlaylistsPage.xaml" />
+    <Page Include="ContentDialogTextInput.xaml" />
+    <Page Include="GridViewItemControl.xaml" />
+    <Page Include="ContentDialogAddToPlaylist.xaml" />
+    <Page Include="PlaylistListViewItemControl.xaml" />
+    <Page Include="NowPlayingPage.xaml" />
   </ItemGroup>
 </Project>

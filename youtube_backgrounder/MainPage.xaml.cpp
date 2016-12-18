@@ -7,6 +7,8 @@
 #include "MainPage.xaml.h"
 #include "SearchPage.xaml.h"
 #include "SettingsPage.xaml.h"
+#include "PlaylistsPage.xaml.h"
+#include "PlaylistIO.h"
 
 
 using namespace youtube_backgrounder;
@@ -29,6 +31,10 @@ using namespace Windows::Web::Http;
 MainPage::MainPage()
 {
 	InitializeComponent();
+	playlists = ref new YoutubePlaylistsCollection;
+
+	auto playlistLoader = ref new PlaylistIO;
+	playlistLoader->Read(&playlists);
 }
 
 void MainPage::MenuButton_Click(Platform::Object^ sender, RoutedEventArgs^ e)
@@ -41,26 +47,32 @@ void MainPage::MenuButton_Click(Platform::Object^ sender, RoutedEventArgs^ e)
 void MainPage::SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	(safe_cast<RadioButton^> (sender))->IsChecked = true;
+
+	PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+	SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
 }
 
-
-void MainPage::PlayerButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+void MainPage::PlaylistsButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	(safe_cast<RadioButton^> (sender))->IsChecked = true;
+
+	PlaylistsPageNavParam^ navParam = ref new PlaylistsPageNavParam(playlists, PlayerFrame);
+	PlaylistsFrame->Navigate(TypeName(PlaylistsPage::typeid), navParam);
+
+	PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
+	SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
 }
 
-
-void youtube_backgrounder::MainPage::AutoSuggestBox_QuerySubmitted(Windows::UI::Xaml::Controls::AutoSuggestBox^ sender, Windows::UI::Xaml::Controls::AutoSuggestBoxQuerySubmittedEventArgs^ args)
+void MainPage::AutoSuggestBox_QuerySubmitted(Windows::UI::Xaml::Controls::AutoSuggestBox^ sender, Windows::UI::Xaml::Controls::AutoSuggestBoxQuerySubmittedEventArgs^ args)
 {
 	if (!sender->Text->IsEmpty())
 	{
 		sender->IsSuggestionListOpen = false;
 
-		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame);
+		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame, playlists);
 		SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
 	}
 }
-
 
 void MainPage::AutoSuggestBox_TextChanged(Windows::UI::Xaml::Controls::AutoSuggestBox^ sender, Windows::UI::Xaml::Controls::AutoSuggestBoxTextChangedEventArgs^ args)
 {
@@ -90,7 +102,6 @@ void MainPage::AutoSuggestBox_TextChanged(Windows::UI::Xaml::Controls::AutoSugge
 		});
 	}
 }
-
 
 void MainPage::AutoSuggestBox_SuggestionChosen(Windows::UI::Xaml::Controls::AutoSuggestBox^ sender, Windows::UI::Xaml::Controls::AutoSuggestBoxSuggestionChosenEventArgs^ args)
 {

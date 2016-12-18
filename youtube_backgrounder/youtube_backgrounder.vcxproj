@@ -164,6 +164,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Libraries\v7\v7.h" />
+    <ClInclude Include="ContentDialogAddToPlaylist.xaml.h">
+      <DependentUpon>ContentDialogAddToPlaylist.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="ContentDialogTextInput.xaml.h">
+      <DependentUpon>ContentDialogTextInput.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="GridViewItemControl.xaml.h">
+      <DependentUpon>GridViewItemControl.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="NowPlayingPage.xaml.h">
+      <DependentUpon>NowPlayingPage.xaml</DependentUpon>
+    </ClInclude>
     <ClInclude Include="PlayerPage.xaml.h">
       <DependentUpon>PlayerPage.xaml</DependentUpon>
     </ClInclude>
@@ -173,6 +185,13 @@
     </ClInclude>
     <ClInclude Include="MainPage.xaml.h">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="PlaylistIO.h" />
+    <ClInclude Include="PlaylistListViewItemControl.xaml.h">
+      <DependentUpon>PlaylistListViewItemControl.xaml</DependentUpon>
+    </ClInclude>
+    <ClInclude Include="PlaylistsPage.xaml.h">
+      <DependentUpon>PlaylistsPage.xaml</DependentUpon>
     </ClInclude>
     <ClInclude Include="SearchPage.xaml.h">
       <DependentUpon>SearchPage.xaml</DependentUpon>
@@ -184,6 +203,7 @@
     <ClInclude Include="tools_http.h" />
     <ClInclude Include="YoutubeExtractor.h" />
     <ClInclude Include="YoutubeItemData.h" />
+    <ClInclude Include="YoutubePlaylist.h" />
     <ClInclude Include="YoutubeQuality.h" />
     <ClInclude Include="YoutubeSearch.h" />
     <ClInclude Include="YouTubeSignatureDecrypt.h" />
@@ -193,10 +213,28 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="AppColorSchemes.xaml" />
+    <Page Include="ContentDialogAddToPlaylist.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ContentDialogTextInput.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GridViewItemControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainPage.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="NowPlayingPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="PlayerPage.xaml" />
+    <Page Include="PlaylistListViewItemControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PlaylistsPage.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SearchPage.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -213,6 +251,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
+    <Image Include="Assets\photo.jpeg" />
+    <Image Include="Assets\photo2.jpg" />
     <Image Include="Assets\SplashScreen.scale-200.png" />
     <Image Include="Assets\Square150x150Logo.scale-200.png" />
     <Image Include="Assets\Square44x44Logo.scale-200.png" />
@@ -232,8 +272,20 @@
     <ClCompile Include="App.xaml.cpp">
       <DependentUpon>App.xaml</DependentUpon>
     </ClCompile>
+    <ClCompile Include="ContentDialogAddToPlaylist.xaml.cpp">
+      <DependentUpon>ContentDialogAddToPlaylist.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="ContentDialogTextInput.xaml.cpp">
+      <DependentUpon>ContentDialogTextInput.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="GridViewItemControl.xaml.cpp">
+      <DependentUpon>GridViewItemControl.xaml</DependentUpon>
+    </ClCompile>
     <ClCompile Include="MainPage.xaml.cpp">
       <DependentUpon>MainPage.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="NowPlayingPage.xaml.cpp">
+      <DependentUpon>NowPlayingPage.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="PlayerPage.xaml.cpp">
       <DependentUpon>PlayerPage.xaml</DependentUpon>
@@ -246,6 +298,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="PlaylistIO.cpp" />
+    <ClCompile Include="PlaylistListViewItemControl.xaml.cpp">
+      <DependentUpon>PlaylistListViewItemControl.xaml</DependentUpon>
+    </ClCompile>
+    <ClCompile Include="PlaylistsPage.xaml.cpp">
+      <DependentUpon>PlaylistsPage.xaml</DependentUpon>
+    </ClCompile>
     <ClCompile Include="SearchPage.xaml.cpp">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </ClCompile>
@@ -256,6 +315,7 @@
     <ClCompile Include="tools_http.cpp" />
     <ClCompile Include="YoutubeExtractor.cpp" />
     <ClCompile Include="YoutubeItemData.cpp" />
+    <ClCompile Include="YoutubePlaylist.cpp" />
     <ClCompile Include="YoutubeQuality.cpp" />
     <ClCompile Include="YoutubeSearch.cpp" />
     <ClCompile Include="YouTubeSignatureDecrypt.cpp" />

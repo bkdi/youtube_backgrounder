@@ -23,19 +23,21 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <RadioButton Grid.Row="0" x:Name="MenuButton" Style="{StaticResource SplitViewMenuButtonStyle}" Click="MenuButton_Click"/>
                 <RadioButton Grid.Row="1" x:Name="SearchButton" Tag="&#xE71E;" Content="Search" Style="{StaticResource SplitViewNavButtonStyle}" IsChecked="True" Click="SearchButton_Click" />
-                <RadioButton Grid.Row="2" x:Name="PlayerButton" Tag="&#xE768;" Content="Play" Style="{StaticResource SplitViewNavButtonStyle}" Click="PlayerButton_Click"/>
-                <Button Grid.Row="4" x:Name="SettingsButton" Tag="&#59155;" Content="Settings" Style="{StaticResource SplitViewButtonStyle}">
+                <RadioButton Grid.Row="2" x:Name="PlaylistsButton" Tag="&#xE90B;" Content="Playlists" Style="{StaticResource SplitViewNavButtonStyle}" Click="PlaylistsButton_Click"/>
+                <RadioButton Grid.Row="3" x:Name="PlayerButton" Tag="&#xEC4F;" Content="Now playing" Style="{StaticResource SplitViewNavButtonStyle}"/>
+                <Button Grid.Row="5" x:Name="SettingsButton" Tag="&#59155;" Content="Settings" Style="{StaticResource SplitViewButtonStyle}">
                     <Button.Flyout>
                         <Flyout x:Name="SettingsFlyout" Placement="Full">
                             <Flyout.FlyoutPresenterStyle>
                                 <Style TargetType="FlyoutPresenter">
-                                    <Setter Property="Background" Value="LightGray" />
+                                    <Setter Property="Background" Value="DimGray" />
                                     <Setter Property="BorderThickness" Value="2"/>
                                     <Setter Property="BorderBrush" Value="Black"/>
                                     <Setter Property="Margin" Value="0"/>
@@ -45,7 +47,7 @@
                         </Flyout>
                     </Button.Flyout>
                 </Button>
-                <Button Grid.Row="5" Tag="" Content="About" Style="{StaticResource SplitViewButtonStyle}" />
+                <Button Grid.Row="6" Tag="" Content="About" Style="{StaticResource SplitViewButtonStyle}" />
             </Grid>
         </SplitView.Pane>
         <SplitView.Content>
@@ -60,10 +62,12 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" MaxWidth="500"/>
                     </Grid.ColumnDefinitions>
-                    <AutoSuggestBox PlaceholderText="Enter title..." VerticalAlignment="Center"  HorizontalAlignment="Stretch" Height="32" Margin="30,4,50,4" QueryIcon="Find" MaxSuggestionListHeight="185" SuggestionChosen="AutoSuggestBox_SuggestionChosen" TextChanged="AutoSuggestBox_TextChanged" QuerySubmitted="AutoSuggestBox_QuerySubmitted"/>
+                    <AutoSuggestBox PlaceholderText="Enter title..." VerticalAlignment="Center" HorizontalAlignment="Stretch" Height="32" Margin="30,4,50,4" QueryIcon="Find" MaxSuggestionListHeight="185" SuggestionChosen="AutoSuggestBox_SuggestionChosen" TextChanged="AutoSuggestBox_TextChanged" QuerySubmitted="AutoSuggestBox_QuerySubmitted"/>
                 </Grid>
                 <Frame Grid.Row="1" x:Name="PlayerFrame"/>
                 <Frame Grid.Row="2" x:Name="SearchFrame"/>
+                <Frame Grid.Row="2" x:Name="PlaylistsFrame"/>
+                <Frame Grid.Row="2" x:Name="NowPlayingFrame"/>
             </Grid>
         </SplitView.Content>
     </SplitView>

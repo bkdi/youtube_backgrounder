@@ -6,6 +6,7 @@
 #pragma once
 
 #include "PlayerPage.g.h"
+#include "YoutubePlaylist.h"
 
 using namespace Windows::Media;
 
@@ -25,11 +26,15 @@ namespace youtube_backgrounder
 
 	private:
 		SystemMediaTransportControls^ systemControls;
+		IIterator<YoutubeItem^>^ playlistIterator;
 
 		void InitializeTransportControls();
 		void SystemControls_ButtonPressed(SystemMediaTransportControls^ sender, SystemMediaTransportControlsButtonPressedEventArgs^ args);
 		void PlayMedia();
 		void PauseMedia();
 		void MusicPlayer_CurrentStateChanged(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void musicPlayer_MediaEnded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+
+		void playItem(YoutubeItem^ item);
 	};
 }

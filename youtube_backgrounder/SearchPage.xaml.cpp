@@ -7,10 +7,6 @@
 #include "SearchPage.xaml.h"
 #include "PlayerPage.xaml.h"
 
-#include "YoutubeExtractor.h"
-#include "YouTubeSignatureDecrypt.h"
-#include "Settings.h"
-
 using namespace youtube_backgrounder;
 
 using namespace Platform;
@@ -29,8 +25,7 @@ using namespace Windows::UI::Xaml::Interop;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-const double SearchPage::minItemWidth = 200.0;
-const double SearchPage::maxItemWidth = 360.0;
+DependencyProperty^ SearchPage::_PlaylistsProperty = DependencyProperty::Register("Playlists", YoutubePlaylistsCollection::typeid, SearchPage::typeid, nullptr);
 
 SearchPage::SearchPage()
 {
@@ -42,16 +37,18 @@ void SearchPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArg
 	inputParams = safe_cast<SearchPageNavParam^> (e->Parameter);
 
 	itemsCollection = ref new YoutubeItemsCollections;
-	gridresult->ItemsSource = itemsCollection->YoutubeMiniatures;
+	gridresult->ItemsSource = itemsCollection->YoutubeItems;
+
+	Playlists = inputParams->Playlists;
 
 	loadYoutubeItems();
 }
 
-void youtube_backgrounder::SearchPage::loadYoutubeItems()
+void SearchPage::loadYoutubeItems()
 {
 	auto httpClient = ref new HttpClient();
 
-	Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=" + inputParams->title + L"&type=video&key=AIzaSyCIM4EzNqi1in22f4Z3Ru3iYvLaY8tc3bo";
+	Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=" + inputParams->Title + L"&type=video&key=AIzaSyCIM4EzNqi1in22f4Z3Ru3iYvLaY8tc3bo";
 	if (!nextPageToken->IsEmpty())
 		url += L"&pageToken=" + nextPageToken;
 
@@ -89,22 +86,10 @@ void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xam
 {
 	auto youtubeItem = safe_cast<YoutubeItem^> (e->ClickedItem);
 
-	auto preferedQuality = safe_cast<YoutubeQuality> (SettingsHelper::getPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY));
-	YoutubeQualityItag preferedItag;
-	IVector<YoutubeQualityItag>^ sortedQualities;
+	auto playlist = ref new YoutubePlaylist(L"");
 
-	auto onlyAuto = SettingsHelper::getPropertyBoolean(Settings::MATERIAL, Settings::Material::ONLYAUDIO);
-	if (onlyAuto)
-		preferedItag = YoutubeQualityItem::qualityTo_DASH_Audio_Quality(preferedQuality);
-	else
-		preferedItag = YoutubeQualityItem::qualityTo_Non_DASH_2D_Quality(preferedQuality);
-
-	auto youtubeExtractor = ref new YoutubeExtractor(youtubeItem->VideoId, preferedItag, onlyAuto);
-	concurrency::create_task(youtubeExtractor->getVideoUrlByItagAsync()).then([this](Platform::String^ urlToPlay)
-	{
-		if (!urlToPlay->IsEmpty())
-			inputParams->playerFrame->Navigate(TypeName(PlayerPage::typeid), urlToPlay);
-	});
+	playlist->add(youtubeItem);
+	inputParams->Frame->Navigate(TypeName(PlayerPage::typeid), playlist);
 }
 
 void SearchPage::ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
@@ -113,12 +98,13 @@ void SearchPage::ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI
 
 	if (e->NewSize.Width != e->PreviousSize.Width)
 	{
-		for (unsigned int i = 0; ; ++i)
+		for (unsigned int i = 1; ; ++i)
 		{
 			auto itemWidth = e->NewSize.Width / i;
 			if (itemWidth >= minItemWidth && itemWidth <= maxItemWidth)
 			{
 				itemWrapGrid->ItemWidth = itemWidth;
+				itemWrapGrid->ItemHeight = itemWidth / (4.0/3.0);
 				break;
 			}
 		}
@@ -133,40 +119,20 @@ void SearchPage::scrollResult_ViewChanged(Platform::Object^ sender, Windows::UI:
 		auto maxVerticalOffset = scrollResult->ScrollableHeight;
 
 		if (maxVerticalOffset < 0 || verticalOffset == maxVerticalOffset)
-		{
-			verticalOffset = 0;
 			loadYoutubeItems();
-		}
 	}
 }
 
 Platform::Object^ youtube_backgrounder::ItemWidthStateConverter::Convert(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language)
 {
-	bool active = false;
-	double width = safe_cast<double> (value);
-
-	if (parameter != nullptr && width <= 360 && width >= 200)
+	double fontSize = 1.0;
+	if (value != nullptr)
 	{
-		Platform::String^ sName = parameter->ToString();
-
-		/*if (sName == "BigFont")
-		{
-			if (width > 310)
-				active = true;
-		}
-		else if (sName == "MediumFont")
-		{
-			if (width > 250 && width <= 310)
-				active = true;
-		}
-		else if (sName == "SmallFont")
-		{
-			if (width <= 250)
-				active = true;
-		}*/
+		double width = safe_cast<double> (value);
+		if(width >= 17.0)
+			fontSize = width / 17.0;
 	}
-
-	return active;
+	return fontSize;
 }
 
 Platform::Object^ youtube_backgrounder::ItemWidthStateConverter::ConvertBack(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language)

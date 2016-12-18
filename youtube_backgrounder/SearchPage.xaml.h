@@ -17,14 +17,16 @@ namespace youtube_backgrounder
 	public ref class SearchPageNavParam sealed
 	{
 	public:
-		SearchPageNavParam(Platform::String^ searchedTitle, Controls::Frame^ frame)
+		SearchPageNavParam(Platform::String^ searchedTitle, Controls::Frame^ frame, YoutubePlaylistsCollection^ playlists)
 		{
-			title = searchedTitle;
-			playerFrame = frame;
+			Title = searchedTitle;
+			Frame = frame;
+			Playlists = playlists;
 		} 
 
-		property Platform::String^ title;
-		property Controls::Frame^ playerFrame;
+		property Platform::String^ Title;
+		property Controls::Frame^ Frame;
+		property YoutubePlaylistsCollection^ Playlists;
 	};
 
 	/// <summary>
@@ -36,12 +38,20 @@ namespace youtube_backgrounder
 	public:
 		SearchPage();
 
+		property YoutubePlaylistsCollection^ Playlists
+		{
+			YoutubePlaylistsCollection^ get() { return (YoutubePlaylistsCollection^)GetValue(_PlaylistsProperty); }
+			void set(YoutubePlaylistsCollection^ value) { SetValue(_PlaylistsProperty, value); }
+		}
+
 	protected:
 		void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 
 	private:	
-		static const double minItemWidth;
-		static const double maxItemWidth;
+		static DependencyProperty^ _PlaylistsProperty;
+
+		const double minItemWidth = 200.0;
+		const double maxItemWidth = 360.0;
 
 		SearchPageNavParam^ inputParams;
 		Platform::String^ nextPageToken;

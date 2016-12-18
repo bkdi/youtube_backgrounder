@@ -6,6 +6,10 @@
 #include "pch.h"
 #include "PlayerPage.xaml.h"
 
+#include "YoutubeExtractor.h"
+#include "YouTubeSignatureDecrypt.h"
+#include "Settings.h"
+
 using namespace youtube_backgrounder;
 
 using namespace Platform;
@@ -92,8 +96,39 @@ void PlayerPage::MusicPlayer_CurrentStateChanged(Platform::Object^ sender, Windo
 
 void PlayerPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
-	Platform::String^ url = safe_cast<Platform::String^> (e->Parameter);
+	playlistIterator = (safe_cast<YoutubePlaylist^> (e->Parameter))->Items->First();
+	playItem(playlistIterator->Current);
+}
 
-	if (!url->IsEmpty())
-		musicPlayer->Source = ref new Uri(url);
+void youtube_backgrounder::PlayerPage::musicPlayer_MediaEnded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{	
+	try
+	{
+		if (playlistIterator->MoveNext())
+			playItem(playlistIterator->Current);
+	}
+	catch (Platform::ChangedStateException^)
+	{
+
+	}
+}
+
+void PlayerPage::playItem(YoutubeItem^ item)
+{
+	auto preferedQuality = safe_cast<YoutubeQuality> (SettingsHelper::getPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY));
+	YoutubeQualityItag preferedItag;
+	IVector<YoutubeQualityItag>^ sortedQualities;
+
+	auto onlyAuto = SettingsHelper::getPropertyBoolean(Settings::MATERIAL, Settings::Material::ONLYAUDIO);
+	if (onlyAuto)
+		preferedItag = YoutubeQualityItem::qualityTo_DASH_Audio_Quality(preferedQuality);
+	else
+		preferedItag = YoutubeQualityItem::qualityTo_Non_DASH_2D_Quality(preferedQuality);
+
+	auto youtubeExtractor = ref new YoutubeExtractor(item->VideoId, preferedItag, onlyAuto);
+	concurrency::create_task(youtubeExtractor->getVideoUrlByItagAsync()).then([this](Platform::String^ urlToPlay)
+	{
+		if (!urlToPlay->IsEmpty())
+			musicPlayer->Source = ref new Uri(urlToPlay);
+	});
 }

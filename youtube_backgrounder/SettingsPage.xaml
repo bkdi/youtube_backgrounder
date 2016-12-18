@@ -10,7 +10,7 @@
         <local:YoutubeQualityCollections/>
     </Page.DataContext>
 
-    <StackPanel Background="LightGray">
+    <StackPanel Background="DimGray">
         <TextBlock Text="Settings" FontSize="25" Margin="10,0,0,10"/>
         <TextBlock Text="Choose prefered video quality" FontSize="15"/>
         <ComboBox x:Name="MaterialQualityCombo" Margin="0,2,0,10" MinWidth="150" FocusVisualSecondaryBrush="White" Background="Transparent" ItemsSource="{Binding YoutubeQualities}" SelectionChanged="MaterialQualityCombo_SelectionChanged">
