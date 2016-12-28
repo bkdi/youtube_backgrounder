@@ -86,10 +86,9 @@ void SearchPage::gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xam
 {
 	auto youtubeItem = safe_cast<YoutubeItem^> (e->ClickedItem);
 
-	auto playlist = ref new YoutubePlaylist(L"");
-
-	playlist->add(youtubeItem);
-	inputParams->Frame->Navigate(TypeName(PlayerPage::typeid), playlist);
+	inputParams->NowPlayingPlaylist->reset();
+	inputParams->NowPlayingPlaylist->add(youtubeItem);
+	inputParams->PlayerFrame->Navigate(TypeName(PlayerPage::typeid), inputParams->NowPlayingPlaylist);
 }
 
 void SearchPage::ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)

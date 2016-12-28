@@ -17,5 +17,16 @@ namespace youtube_backgrounder
 	{
 	public:
 		NowPlayingPage();
+
+	protected:
+		void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
+	};
+
+	public ref class NowPlayingBackgroundConverter sealed : Windows::UI::Xaml::Data::IValueConverter
+	{
+	public:
+
+		virtual Platform::Object^ Convert(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language);
+		virtual Platform::Object^ ConvertBack(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language);
 	};
 }

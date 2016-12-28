@@ -6,6 +6,8 @@
 #include "pch.h"
 #include "NowPlayingPage.xaml.h"
 
+#include "YoutubePlaylist.h"
+
 using namespace youtube_backgrounder;
 
 using namespace Platform;
@@ -25,3 +27,22 @@ NowPlayingPage::NowPlayingPage()
 {
 	InitializeComponent();
 }
+
+void NowPlayingPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
+{
+	NowPlayingListView->ItemsSource = (safe_cast<YoutubePlaylist^> (e->Parameter))->Items;
+}
+
+Platform::Object^ NowPlayingBackgroundConverter::Convert(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language)
+{
+	if (safe_cast<bool> (value))
+		return ref new SolidColorBrush(Windows::UI::Colors::Blue);
+	else
+		return ref new SolidColorBrush(Windows::UI::Colors::Black);
+}
+
+Platform::Object^ NowPlayingBackgroundConverter::ConvertBack(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language)
+{
+	throw ref new Platform::NotImplementedException();
+}
+

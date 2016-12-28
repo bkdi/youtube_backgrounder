@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "PlaylistsPage.xaml.h"
+#include "PlayerPage.xaml.h"
 #include "ContentDialogTextInput.xaml.h"
 #include "PlaylistIO.h"
 
@@ -20,10 +21,13 @@ using namespace Windows::UI::Xaml::Data;
 using namespace Windows::UI::Xaml::Input;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
+using namespace Windows::UI::Xaml::Interop;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
+DependencyProperty^ PlaylistsPage::_NowPlayingPlaylistProperty = DependencyProperty::Register(L"NowPlayingPlaylist", YoutubePlaylist::typeid, PlaylistsPage::typeid, nullptr);
 DependencyProperty^ PlaylistsPage::_PlayerFrameProperty = DependencyProperty::Register(L"PlayerFrame", Controls::Frame::typeid, PlaylistsPage::typeid, nullptr);
+
 
 PlaylistsPage::PlaylistsPage()
 {
@@ -35,6 +39,7 @@ void PlaylistsPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEvent
 	inputParams = safe_cast<PlaylistsPageNavParam^> (e->Parameter);
 
 	PlaylistsListView->ItemsSource = inputParams->Playlists->PlaylistItems;
+	NowPlayingPlaylist = inputParams->NowPlayingPlaylist;
 	PlayerFrame = inputParams->PlayerFrame;
 }
 
@@ -109,3 +114,15 @@ void PlaylistsPage::PlaylistsListView_SelectionChanged(Platform::Object^ sender,
 	}
 }
 
+void PlaylistsPage::PlaylistListViewItemControl_PlayButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	auto element = safe_cast<FrameworkElement^> (sender);
+	auto playlist = (safe_cast<YoutubePlaylist^> (element->DataContext));
+
+	inputParams->NowPlayingPlaylist->reset();
+	inputParams->NowPlayingPlaylist->Name = playlist->Name;
+	for (auto item : playlist->Items)
+		inputParams->NowPlayingPlaylist->add(item);
+
+	PlayerFrame->Navigate(TypeName(PlayerPage::typeid), inputParams->NowPlayingPlaylist);
+}

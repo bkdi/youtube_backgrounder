@@ -8,6 +8,7 @@
 #include "SearchPage.xaml.h"
 #include "SettingsPage.xaml.h"
 #include "PlaylistsPage.xaml.h"
+#include "NowPlayingPage.xaml.h"
 #include "PlaylistIO.h"
 
 
@@ -32,6 +33,7 @@ MainPage::MainPage()
 {
 	InitializeComponent();
 	playlists = ref new YoutubePlaylistsCollection;
+	nowPlayingPlaylist = ref new YoutubePlaylist(L"");
 
 	auto playlistLoader = ref new PlaylistIO;
 	playlistLoader->Read(&playlists);
@@ -48,19 +50,35 @@ void MainPage::SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::R
 {
 	(safe_cast<RadioButton^> (sender))->IsChecked = true;
 
-	PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
 	SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
+
+	PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+	NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
 }
 
 void MainPage::PlaylistsButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	(safe_cast<RadioButton^> (sender))->IsChecked = true;
 
-	PlaylistsPageNavParam^ navParam = ref new PlaylistsPageNavParam(playlists, PlayerFrame);
+	PlaylistsPageNavParam^ navParam = ref new PlaylistsPageNavParam(playlists, nowPlayingPlaylist, PlayerFrame);
 	PlaylistsFrame->Navigate(TypeName(PlaylistsPage::typeid), navParam);
 
 	PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
+
 	SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+	NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+}
+
+void MainPage::NowPlayingButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	(safe_cast<RadioButton^> (sender))->IsChecked = true;
+
+	NowPlayingFrame->Navigate(TypeName(NowPlayingPage::typeid), nowPlayingPlaylist);
+
+	NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
+
+	SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+	PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
 }
 
 void MainPage::AutoSuggestBox_QuerySubmitted(Windows::UI::Xaml::Controls::AutoSuggestBox^ sender, Windows::UI::Xaml::Controls::AutoSuggestBoxQuerySubmittedEventArgs^ args)
@@ -69,7 +87,7 @@ void MainPage::AutoSuggestBox_QuerySubmitted(Windows::UI::Xaml::Controls::AutoSu
 	{
 		sender->IsSuggestionListOpen = false;
 
-		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame, playlists);
+		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame, playlists, nowPlayingPlaylist);
 		SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
 	}
 }

@@ -6,8 +6,26 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Page.DataContext>
+        <local:YoutubeItemsCollections/>
+    </Page.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="AppColorSchemes.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <local:NowPlayingBackgroundConverter x:Key="NowPlayingBackgroundConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <ListView />
+        <ListView x:Name="NowPlayingListView" ItemsSource="{Binding YoutubeItems}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBox Text="{Binding Title}" Background="{Binding NowPlaying, Converter={StaticResource NowPlayingBackgroundConverter}, Mode=OneWay}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </Page>

@@ -31,7 +31,7 @@
                 <RadioButton Grid.Row="0" x:Name="MenuButton" Style="{StaticResource SplitViewMenuButtonStyle}" Click="MenuButton_Click"/>
                 <RadioButton Grid.Row="1" x:Name="SearchButton" Tag="&#xE71E;" Content="Search" Style="{StaticResource SplitViewNavButtonStyle}" IsChecked="True" Click="SearchButton_Click" />
                 <RadioButton Grid.Row="2" x:Name="PlaylistsButton" Tag="&#xE90B;" Content="Playlists" Style="{StaticResource SplitViewNavButtonStyle}" Click="PlaylistsButton_Click"/>
-                <RadioButton Grid.Row="3" x:Name="PlayerButton" Tag="&#xEC4F;" Content="Now playing" Style="{StaticResource SplitViewNavButtonStyle}"/>
+                <RadioButton Grid.Row="3" x:Name="NowPlayingButton" Tag="&#xEC4F;" Content="Now playing" Style="{StaticResource SplitViewNavButtonStyle}" Click="NowPlayingButton_Click"/>
                 <Button Grid.Row="5" x:Name="SettingsButton" Tag="&#59155;" Content="Settings" Style="{StaticResource SplitViewButtonStyle}">
                     <Button.Flyout>
                         <Flyout x:Name="SettingsFlyout" Placement="Full">

@@ -5,7 +5,6 @@
 
 #include "pch.h"
 #include "PlaylistListViewItemControl.xaml.h"
-#include "PlayerPage.xaml.h"
 
 using namespace youtube_backgrounder;
 
@@ -19,13 +18,11 @@ using namespace Windows::UI::Xaml::Data;
 using namespace Windows::UI::Xaml::Input;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
-using namespace Windows::UI::Xaml::Interop;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
 DependencyProperty^ PlaylistListViewItemControl::_PlaylistNameProperty = DependencyProperty::Register(L"PlaylistName", Platform::String::typeid, PlaylistListViewItemControl::typeid, ref new PropertyMetadata(""));
 DependencyProperty^ PlaylistListViewItemControl::_TracksCountProperty = DependencyProperty::Register(L"TracksCount", unsigned int::typeid, PlaylistListViewItemControl::typeid, nullptr);
-DependencyProperty^ PlaylistListViewItemControl::_PlayerFrameProperty = DependencyProperty::Register(L"PlayerFrame", Controls::Frame::typeid, PlaylistListViewItemControl::typeid, nullptr);
 
 PlaylistListViewItemControl::PlaylistListViewItemControl()
 {
@@ -49,8 +46,5 @@ Platform::Object^ PlaylistItemsCountToStrConverter::ConvertBack(Platform::Object
 
 void PlaylistListViewItemControl::PlaylistPlayButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	auto element = safe_cast<FrameworkElement^> (this);
-	auto playlist = (safe_cast<YoutubePlaylist^> (element->DataContext));
-
-	PlayerFrame->Navigate(TypeName(PlayerPage::typeid), playlist);
+	PlayButtonClick(this, e);
 }

@@ -36,5 +36,6 @@ namespace youtube_backgrounder
 		void musicPlayer_MediaEnded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 
 		void playItem(YoutubeItem^ item);
+		void musicPlayer_MediaOpened(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }

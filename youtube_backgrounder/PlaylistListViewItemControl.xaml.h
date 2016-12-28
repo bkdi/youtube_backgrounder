@@ -18,6 +18,8 @@ namespace youtube_backgrounder
 	public:
 		PlaylistListViewItemControl();
 
+		event Windows::Foundation::EventHandler<Windows::UI::Xaml::RoutedEventArgs^ >^ PlayButtonClick;
+
 		static property DependencyProperty^ PlaylistNameProperty
 		{
 			DependencyProperty^ get() { return _PlaylistNameProperty; }
@@ -26,11 +28,6 @@ namespace youtube_backgrounder
 		static property DependencyProperty^ TracksCountProperty
 		{
 			DependencyProperty^ get() { return _TracksCountProperty; }
-		}
-
-		static property DependencyProperty^ PlayerFrameProperty
-		{
-			DependencyProperty^ get() { return _PlayerFrameProperty; }
 		}
 
 		property Platform::String^ PlaylistName
@@ -45,16 +42,9 @@ namespace youtube_backgrounder
 			void set(unsigned int value) { SetValue(TracksCountProperty, value); }
 		}
 
-		property Controls::Frame^ PlayerFrame
-		{
-			Controls::Frame^ get() { return (Controls::Frame^)GetValue(PlayerFrameProperty); }
-			void set(Controls::Frame^ value) { SetValue(PlayerFrameProperty, value); }
-		}
-
 	private:
 		static DependencyProperty^ _PlaylistNameProperty;
 		static DependencyProperty^ _TracksCountProperty;
-		static DependencyProperty^ _PlayerFrameProperty;
 
 		void PlaylistPlayButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};

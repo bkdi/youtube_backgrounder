@@ -34,7 +34,7 @@
             <ListView x:Name="PlaylistsListView" ItemsSource="{Binding PlaylistItems}" SelectionChanged="PlaylistsListView_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <local:PlaylistListViewItemControl PlaylistName="{Binding Name}" TracksCount="{Binding TracksCount}" PlayerFrame="{Binding ElementName=PlaylistsPage, Path=PlayerFrame}" />
+                        <local:PlaylistListViewItemControl PlaylistName="{Binding Name}" TracksCount="{Binding TracksCount}" PlayButtonClick="PlaylistListViewItemControl_PlayButtonClick"/>
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.ItemContainerStyle>

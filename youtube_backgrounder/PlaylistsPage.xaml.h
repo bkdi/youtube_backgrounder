@@ -15,13 +15,15 @@ namespace youtube_backgrounder
 	public ref class PlaylistsPageNavParam sealed
 	{
 	public:
-		PlaylistsPageNavParam(YoutubePlaylistsCollection^ playlists, Controls::Frame^ frame)
+		PlaylistsPageNavParam(YoutubePlaylistsCollection^ playlists, YoutubePlaylist^ nowPlayingPlaylist, Controls::Frame^ frame)
 		{
 			Playlists = playlists;
 			PlayerFrame = frame;
+			NowPlayingPlaylist = nowPlayingPlaylist;
 		}
 
 		property YoutubePlaylistsCollection^ Playlists;
+		property YoutubePlaylist^ NowPlayingPlaylist;
 		property Controls::Frame^ PlayerFrame;
 	};
 
@@ -40,6 +42,12 @@ namespace youtube_backgrounder
 			void set(Controls::Frame^ value) { SetValue(_PlayerFrameProperty, value); }
 		}
 
+		property YoutubePlaylist^ NowPlayingPlaylist
+		{
+			YoutubePlaylist^ get() { return (YoutubePlaylist^)GetValue(_NowPlayingPlaylistProperty); }
+			void set(YoutubePlaylist^ value) { SetValue(_NowPlayingPlaylistProperty, value); }
+		}
+
 	protected:
 		void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 
@@ -50,10 +58,13 @@ namespace youtube_backgrounder
 		PlaylistsPageNavParam^ inputParams;
 
 		static DependencyProperty^ _PlayerFrameProperty;
+		static DependencyProperty^ _NowPlayingPlaylistProperty;
 
 		void ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e);
 		void AddNewPlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void PlaylistsListView_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);
 		void DeletePlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void PlaylistListViewItemControl_ButtonClicked(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void PlaylistListViewItemControl_PlayButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }

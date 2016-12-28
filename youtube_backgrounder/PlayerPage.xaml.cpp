@@ -96,7 +96,12 @@ void PlayerPage::MusicPlayer_CurrentStateChanged(Platform::Object^ sender, Windo
 
 void PlayerPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
-	playlistIterator = (safe_cast<YoutubePlaylist^> (e->Parameter))->Items->First();
+	auto nowPlayingPlaylist = (safe_cast<YoutubePlaylist^> (e->Parameter));
+
+	for(auto item : nowPlayingPlaylist->Items)
+		item->NowPlaying = false;
+
+	playlistIterator = nowPlayingPlaylist->Items->First();
 	playItem(playlistIterator->Current);
 }
 
@@ -104,7 +109,8 @@ void youtube_backgrounder::PlayerPage::musicPlayer_MediaEnded(Platform::Object^ 
 {	
 	try
 	{
-		if (playlistIterator->MoveNext())
+		playlistIterator->Current->NowPlaying = false;
+		if (playlistIterator->MoveNext() && playlistIterator->HasCurrent)
 			playItem(playlistIterator->Current);
 	}
 	catch (Platform::ChangedStateException^)
@@ -131,4 +137,10 @@ void PlayerPage::playItem(YoutubeItem^ item)
 		if (!urlToPlay->IsEmpty())
 			musicPlayer->Source = ref new Uri(urlToPlay);
 	});
+}
+
+
+void PlayerPage::musicPlayer_MediaOpened(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	playlistIterator->Current->NowPlaying = true;
 }
