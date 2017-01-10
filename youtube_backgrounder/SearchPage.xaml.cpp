@@ -63,7 +63,9 @@ void SearchPage::loadYoutubeItems()
 		{
 			read_json(jsonStream, pt);
 
-			nextPageToken = ref new Platform::String(pt.find(L"nextPageToken")->second.get_value<std::wstring>().c_str());
+			auto it = pt.find(L"nextPageToken");
+			if (it != pt.not_found())
+				nextPageToken = ref new Platform::String(it->second.get_value<std::wstring>().c_str());
 
 			for (const boost::property_tree::wptree::value_type& item : pt.get_child(L"items"))
 			{
@@ -79,6 +81,8 @@ void SearchPage::loadYoutubeItems()
 		{
 			//TODO:
 		}
+
+		EmptyPageInfoStackPanel->Visibility = itemsCollection->YoutubeItems->Size > 0 ? Windows::UI::Xaml::Visibility::Collapsed : Windows::UI::Xaml::Visibility::Visible;
 	});
 }
 
@@ -120,23 +124,6 @@ void SearchPage::scrollResult_ViewChanged(Platform::Object^ sender, Windows::UI:
 		if (maxVerticalOffset < 0 || verticalOffset == maxVerticalOffset)
 			loadYoutubeItems();
 	}
-}
-
-Platform::Object^ youtube_backgrounder::ItemWidthStateConverter::Convert(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language)
-{
-	double fontSize = 1.0;
-	if (value != nullptr)
-	{
-		double width = safe_cast<double> (value);
-		if(width >= 17.0)
-			fontSize = width / 17.0;
-	}
-	return fontSize;
-}
-
-Platform::Object^ youtube_backgrounder::ItemWidthStateConverter::ConvertBack(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language)
-{
-	throw ref new Platform::NotImplementedException();
 }
 
 Windows::Foundation::EventRegistrationToken youtube_backgrounder::SizeChange::eventToken;

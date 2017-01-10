@@ -20,12 +20,12 @@
         <local:YoutubePlaylistsCollection/>
     </Page.DataContext>
 
-    <Grid Background="{StaticResource BackgroundPageDefault}">
+    <Grid Background="Transparent">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <Image Grid.ColumnSpan="2" Stretch="UniformToFill" Source="/Assets/photo.jpeg"/>
+       
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                 <Button x:Name="AddNewPlaylistButton" Margin="5,0,0,0" Content="&#xE710;" FontFamily="Segoe MDL2 Assets" FontSize="12" Height="30" Width="30" HorizontalAlignment="Left" Click="AddNewPlaylistButton_Click" />

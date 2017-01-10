@@ -66,14 +66,6 @@ namespace youtube_backgrounder
 		void scrollResult_ViewChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::ScrollViewerViewChangedEventArgs^ e);
 	};
 
-	public ref class ItemWidthStateConverter sealed : Windows::UI::Xaml::Data::IValueConverter
-	{
-	public:
-
-		virtual Platform::Object^ Convert(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language);
-		virtual Platform::Object^ ConvertBack(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language);
-	};
-
 	public ref class SizeChange sealed : DependencyObject
 	{
 	public:

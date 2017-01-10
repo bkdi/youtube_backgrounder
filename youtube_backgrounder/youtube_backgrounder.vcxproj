@@ -253,6 +253,8 @@
     <Image Include="Assets\LockScreenLogo.scale-200.png" />
     <Image Include="Assets\photo.jpeg" />
     <Image Include="Assets\photo2.jpg" />
+    <Image Include="Assets\photo3.jpeg" />
+    <Image Include="Assets\photo4.jpg" />
     <Image Include="Assets\SplashScreen.scale-200.png" />
     <Image Include="Assets\Square150x150Logo.scale-200.png" />
     <Image Include="Assets\Square44x44Logo.scale-200.png" />

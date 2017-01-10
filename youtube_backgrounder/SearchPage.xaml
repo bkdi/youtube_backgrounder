@@ -19,6 +19,10 @@
     </Page.DataContext>
 
     <Grid x:Name="grid_main" Background="{StaticResource BackgroundPageDefault}">
+        <StackPanel x:Name="EmptyPageInfoStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="&#xE71E;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" FontSize="40"/>
+            <TextBlock Text="No results"  FontSize="30" Margin="5,0,0,0"/>
+        </StackPanel>
         <ScrollViewer x:Name="scrollResult" Margin="5,5,0,0" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" ViewChanged="scrollResult_ViewChanged">
             <GridView x:Name="gridresult" ItemsSource="{Binding YoutubeItems}" ItemClick="gridresult_ItemClick" IsItemClickEnabled="True">
                 <GridView.ItemTemplate>

@@ -42,8 +42,6 @@ MainPage::MainPage()
 void MainPage::MenuButton_Click(Platform::Object^ sender, RoutedEventArgs^ e)
 {
 	MenuSplitView->IsPaneOpen = !MenuSplitView->IsPaneOpen;
-
-	(safe_cast<RadioButton^> (sender))->IsChecked = false;
 }
 
 void MainPage::SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)

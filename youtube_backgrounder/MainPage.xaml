@@ -28,7 +28,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <RadioButton Grid.Row="0" x:Name="MenuButton" Style="{StaticResource SplitViewMenuButtonStyle}" Click="MenuButton_Click"/>
+                <Button Grid.Row="0" x:Name="MenuButton" Style="{StaticResource SplitViewMenuButtonStyle}" Click="MenuButton_Click"/>
                 <RadioButton Grid.Row="1" x:Name="SearchButton" Tag="&#xE71E;" Content="Search" Style="{StaticResource SplitViewNavButtonStyle}" IsChecked="True" Click="SearchButton_Click" />
                 <RadioButton Grid.Row="2" x:Name="PlaylistsButton" Tag="&#xE90B;" Content="Playlists" Style="{StaticResource SplitViewNavButtonStyle}" Click="PlaylistsButton_Click"/>
                 <RadioButton Grid.Row="3" x:Name="NowPlayingButton" Tag="&#xEC4F;" Content="Now playing" Style="{StaticResource SplitViewNavButtonStyle}" Click="NowPlayingButton_Click"/>
@@ -53,7 +53,7 @@
         <SplitView.Content>
             <Grid x:Name="MainGrid" Background="{StaticResource BackgroundPageDefault}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="48"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
@@ -64,7 +64,7 @@
                     </Grid.ColumnDefinitions>
                     <AutoSuggestBox PlaceholderText="Enter title..." VerticalAlignment="Center" HorizontalAlignment="Stretch" Height="32" Margin="30,4,50,4" QueryIcon="Find" MaxSuggestionListHeight="185" SuggestionChosen="AutoSuggestBox_SuggestionChosen" TextChanged="AutoSuggestBox_TextChanged" QuerySubmitted="AutoSuggestBox_QuerySubmitted"/>
                 </Grid>
-                <Frame Grid.Row="1" x:Name="PlayerFrame"/>
+                <Frame Grid.Row="1" x:Name="PlayerFrame" BorderBrush="Black" BorderThickness="0,0,0,2"/>
                 <Frame Grid.Row="2" x:Name="SearchFrame"/>
                 <Frame Grid.Row="2" x:Name="PlaylistsFrame"/>
                 <Frame Grid.Row="2" x:Name="NowPlayingFrame"/>

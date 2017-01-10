@@ -39,6 +39,7 @@
     <ClCompile Include="ContentDialogAddToPlaylist.xaml.cpp" />
     <ClCompile Include="PlaylistListViewItemControl.xaml.cpp" />
     <ClCompile Include="PlaylistIO.cpp" />
+    <ClCompile Include="NowPlayingPage.xaml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -64,6 +65,7 @@
     <ClInclude Include="ContentDialogAddToPlaylist.xaml.h" />
     <ClInclude Include="PlaylistListViewItemControl.xaml.h" />
     <ClInclude Include="PlaylistIO.h" />
+    <ClInclude Include="NowPlayingPage.xaml.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -91,6 +93,12 @@
       <Filter>Assets</Filter>
     </Image>
     <Image Include="Assets\photo2.jpg">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\photo3.jpeg">
+      <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\photo4.jpg">
       <Filter>Assets</Filter>
     </Image>
   </ItemGroup>
