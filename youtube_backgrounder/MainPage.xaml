@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <SplitView x:Name="MenuSplitView" DisplayMode="CompactOverlay" IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="200" PaneBackground="{ThemeResource SplitViewBackgroundBrush}">
+    <SplitView x:Name="MenuSplitView" DisplayMode="CompactOverlay" IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="170" PaneBackground="Black">
         <SplitView.Pane>
             <Grid>
                 <Grid.RowDefinitions>
@@ -27,12 +27,14 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" x:Name="MenuButton" Style="{StaticResource SplitViewMenuButtonStyle}" Click="MenuButton_Click"/>
-                <RadioButton Grid.Row="1" x:Name="SearchButton" Tag="&#xE71E;" Content="Search" Style="{StaticResource SplitViewNavButtonStyle}" IsChecked="True" Click="SearchButton_Click" />
-                <RadioButton Grid.Row="2" x:Name="PlaylistsButton" Tag="&#xE90B;" Content="Playlists" Style="{StaticResource SplitViewNavButtonStyle}" Click="PlaylistsButton_Click"/>
-                <RadioButton Grid.Row="3" x:Name="NowPlayingButton" Tag="&#xEC4F;" Content="Now playing" Style="{StaticResource SplitViewNavButtonStyle}" Click="NowPlayingButton_Click"/>
-                <Button Grid.Row="5" x:Name="SettingsButton" Tag="&#59155;" Content="Settings" Style="{StaticResource SplitViewButtonStyle}">
+                <Button Grid.Row="0" x:Name="MenuButton" ToolTipService.ToolTip="Menu" Style="{StaticResource SplitViewMenuButtonStyle}" Click="MenuButton_Click"/>
+                <RadioButton Grid.Row="1" x:Name="SearchButton" Tag="&#xE71E;" Content="Search" ToolTipService.ToolTip="Search" Style="{StaticResource SplitViewNavButtonStyle}" IsChecked="True" Click="SearchButton_Click" />
+                <RadioButton Grid.Row="2" x:Name="PlaylistsButton" Tag="&#xE90B;" Content="Playlists" ToolTipService.ToolTip="Playlists" Style="{StaticResource SplitViewNavButtonStyle}" Click="PlaylistsButton_Click"/>
+                <RadioButton Grid.Row="3" x:Name="NowPlayingButton" Tag="&#xEC4F;" Content="Now playing" ToolTipService.ToolTip="Now playing" Style="{StaticResource SplitViewNavButtonStyle}" Click="NowPlayingButton_Click"/>
+                <Button Grid.Row="5" x:Name="WindowProportionButton" Tag="&#x00BD;" Content="Proportion" Style="{StaticResource SplitViewButtonStyle2}" Click="WindowProportionButton_Click"/>
+                <Button Grid.Row="6" x:Name="SettingsButton" Tag="&#59155;" Content="Settings" ToolTipService.ToolTip="Settings" Style="{StaticResource SplitViewButtonStyle}">
                     <Button.Flyout>
                         <Flyout x:Name="SettingsFlyout" Placement="Full">
                             <Flyout.FlyoutPresenterStyle>
@@ -47,7 +49,7 @@
                         </Flyout>
                     </Button.Flyout>
                 </Button>
-                <Button Grid.Row="6" Tag="" Content="About" Style="{StaticResource SplitViewButtonStyle}" />
+                <Button Grid.Row="7" Tag="" Content="About" Style="{StaticResource SplitViewButtonStyle}" />
             </Grid>
         </SplitView.Pane>
         <SplitView.Content>

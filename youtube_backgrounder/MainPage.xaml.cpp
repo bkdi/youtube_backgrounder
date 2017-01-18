@@ -37,6 +37,9 @@ MainPage::MainPage()
 
 	auto playlistLoader = ref new PlaylistIO;
 	playlistLoader->Read(&playlists);
+
+	SearchPageNavParam^ navParam = ref new SearchPageNavParam(L"", PlayerFrame, playlists, nowPlayingPlaylist);
+	SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
 }
 
 void MainPage::MenuButton_Click(Platform::Object^ sender, RoutedEventArgs^ e)
@@ -122,4 +125,44 @@ void MainPage::AutoSuggestBox_TextChanged(Windows::UI::Xaml::Controls::AutoSugge
 void MainPage::AutoSuggestBox_SuggestionChosen(Windows::UI::Xaml::Controls::AutoSuggestBox^ sender, Windows::UI::Xaml::Controls::AutoSuggestBoxSuggestionChosenEventArgs^ args)
 {
 	sender->Text = args->SelectedItem->ToString();
+}
+
+void MainPage::WindowProportionButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	static int state = 1;
+
+	++state %= 3;
+
+	auto button = safe_cast<Button^> (sender);
+	switch (state)
+	{
+	/*case 0: 
+		button->Tag = L"0"; 
+
+		MainGrid->RowDefinitions->GetAt(1)->Height = GridLength(0, GridUnitType::Star);
+		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(1, GridUnitType::Star);
+		break;*/
+	case 0: 
+		button->Tag = L"\u00BC"; 
+		MainGrid->RowDefinitions->GetAt(1)->Height = GridLength(1, GridUnitType::Star);
+		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(3, GridUnitType::Star);
+		break;
+	case 1: 
+		button->Tag = L"\u00BD"; 
+		MainGrid->RowDefinitions->GetAt(1)->Height = GridLength(1, GridUnitType::Star);
+		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(1, GridUnitType::Star);
+		break;
+	case 2: 
+		button->Tag = L"\u00BE"; 
+		MainGrid->RowDefinitions->GetAt(1)->Height = GridLength(3, GridUnitType::Star);
+		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(1, GridUnitType::Star);
+		break;
+	/*case 4: 
+		button->Tag = L"1"; 
+
+		MainGrid->RowDefinitions->GetAt(1)->Height = GridLength(1, GridUnitType::Star);
+		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(0, GridUnitType::Star);
+		
+		break;*/
+	}
 }
