@@ -41,7 +41,8 @@ void SearchPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArg
 
 	Playlists = inputParams->Playlists;
 
-	loadYoutubeItems();
+	if(!inputParams->Title->IsEmpty())
+		loadYoutubeItems();
 }
 
 void SearchPage::loadYoutubeItems()
