@@ -12,17 +12,20 @@ namespace youtube_backgrounder
 	void YoutubePlaylist::add(YoutubeItem^ item)
 	{
 		itemsCollection->AppendItem(item);
+		OnPropertyChanged("TracksCount");
 	}
 
 	void YoutubePlaylist::clear()
 	{
 		itemsCollection->Clear();
+		OnPropertyChanged("TracksCount");
 	}
 
 	void YoutubePlaylist::reset()
 	{
 		clear();
 		Name = L"";
+		OnPropertyChanged("TracksCount");
 	}
 
 	IVector<YoutubeItem^>^ YoutubePlaylist::getItems()

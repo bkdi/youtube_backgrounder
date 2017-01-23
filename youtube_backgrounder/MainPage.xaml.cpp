@@ -10,7 +10,7 @@
 #include "PlaylistsPage.xaml.h"
 #include "NowPlayingPage.xaml.h"
 #include "PlaylistIO.h"
-
+#include "ContentDialogTextInput.xaml.h"
 
 using namespace youtube_backgrounder;
 
@@ -37,6 +37,7 @@ MainPage::MainPage()
 
 	auto playlistLoader = ref new PlaylistIO;
 	playlistLoader->Read(&playlists);
+	PlaylistsListView->ItemsSource = playlists->PlaylistItems;
 
 	SearchPageNavParam^ navParam = ref new SearchPageNavParam(L"", PlayerFrame, playlists, nowPlayingPlaylist);
 	SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
@@ -44,12 +45,14 @@ MainPage::MainPage()
 
 void MainPage::MenuButton_Click(Platform::Object^ sender, RoutedEventArgs^ e)
 {
+	MenuSplitView->OpenPaneLength = 150;
 	MenuSplitView->IsPaneOpen = !MenuSplitView->IsPaneOpen;
 }
 
 void MainPage::SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	(safe_cast<RadioButton^> (sender))->IsChecked = true;
+	MenuSplitView->OpenPaneLength = 150;
 
 	SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
 
@@ -59,7 +62,9 @@ void MainPage::SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::R
 
 void MainPage::PlaylistsButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	(safe_cast<RadioButton^> (sender))->IsChecked = true;
+	MenuSplitView->OpenPaneLength = 500;
+	MenuSplitView->IsPaneOpen = true;
+	/*(safe_cast<RadioButton^> (sender))->IsChecked = true;
 
 	PlaylistsPageNavParam^ navParam = ref new PlaylistsPageNavParam(playlists, nowPlayingPlaylist, PlayerFrame);
 	PlaylistsFrame->Navigate(TypeName(PlaylistsPage::typeid), navParam);
@@ -67,12 +72,13 @@ void MainPage::PlaylistsButton_Click(Platform::Object^ sender, Windows::UI::Xaml
 	PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
 
 	SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
-	NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+	NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;*/
 }
 
 void MainPage::NowPlayingButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
 	(safe_cast<RadioButton^> (sender))->IsChecked = true;
+	MenuSplitView->OpenPaneLength = 150;
 
 	NowPlayingFrame->Navigate(TypeName(NowPlayingPage::typeid), nowPlayingPlaylist);
 
@@ -90,6 +96,13 @@ void MainPage::AutoSuggestBox_QuerySubmitted(Windows::UI::Xaml::Controls::AutoSu
 
 		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame, playlists, nowPlayingPlaylist);
 		SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
+
+		SearchButton->IsChecked = true;
+
+		SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
+
+		PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+		NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
 	}
 }
 
@@ -131,6 +144,8 @@ void MainPage::WindowProportionButton_Click(Platform::Object^ sender, Windows::U
 {
 	static int state = 1;
 
+	MenuSplitView->OpenPaneLength = 150;
+
 	++state %= 3;
 
 	auto button = safe_cast<Button^> (sender);
@@ -164,5 +179,33 @@ void MainPage::WindowProportionButton_Click(Platform::Object^ sender, Windows::U
 		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(0, GridUnitType::Star);
 		
 		break;*/
+	}
+}
+
+void youtube_backgrounder::MainPage::AddPlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	auto dialogPlaylistNameInput = ref new ContentDialogTextInput(playlists);
+
+	concurrency::create_task(dialogPlaylistNameInput->ShowAsync()).then([this, dialogPlaylistNameInput](Controls::ContentDialogResult result)
+	{
+		if (result == Controls::ContentDialogResult::Primary)
+		{
+			auto playlist = ref new YoutubePlaylist(dialogPlaylistNameInput->Text);
+			playlists->AppendPlaylist(playlist);
+			auto playlistLoader = ref new PlaylistIO;
+			playlistLoader->Write(playlists);
+		}
+	});
+}
+
+
+void youtube_backgrounder::MainPage::DeletePlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	if (PlaylistsListView->SelectedItem != nullptr)
+	{
+		auto playlist = safe_cast<YoutubePlaylist^> (PlaylistsListView->SelectedItem);
+		playlist->clear();
+
+		playlists->DeletePlaylist(playlist);
 	}
 }

@@ -7,27 +7,36 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="100"
-    d:DesignWidth="250"
-    x:Name="PlaylistListViewItem">
+    d:DesignWidth="350"
+    x:Name="PlaylistListViewItem"
+    PointerMoved="PlaylistListViewItem_PointerMoved"
+    PointerExited="PlaylistListViewItem_PointerExited">
 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="AppColorSchemes.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <local:PlaylistItemsCountToStrConverter x:Key="PlaylistItemsCountToStrConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="#99202020" BorderThickness="1" BorderBrush="Black">
+    <Grid Background="Transparent" Height="100">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="133"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Image Grid.Column="0" Width="75" Height="75" Margin="5" Stretch="UniformToFill" Source="{Binding Items[0].SmallThumbnail}" />
-        <TextBlock Grid.Column="1" Margin="5" FontSize="20" Text="{Binding ElementName=PlaylistListViewItem, Path=PlaylistName, Mode=OneWay}" VerticalAlignment="Top"/>
-        <TextBlock Grid.Column="1" Margin="5" FontSize="15" Text="{Binding ElementName=PlaylistListViewItem, Path=TracksCount, Mode=OneWay, Converter={StaticResource PlaylistItemsCountToStrConverter}}" VerticalAlignment="Center"/>
-        <Button x:Name="PlaylistPlayButton" Grid.Column="2" Content="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="40" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#00000000" Click="PlaylistPlayButton_Click"/>
+        <Grid Margin="2" BorderBrush="Black" BorderThickness="1">
+            <TextBlock Foreground="DimGray" Text="&#xE90B;" FontFamily="Segoe MDL2 Assets" FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <Image Stretch="UniformToFill" Source="{Binding Items[0].SmallThumbnail}" />
+        </Grid>
+        
+        <Button x:Name="PlaylistPlayButton" ToolTipService.ToolTip="Play" Background="#88000000" Visibility="Collapsed" Foreground="#AAFFFFFF" Content="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="42" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="PlaylistPlayButton_Click"/>
+        <StackPanel Grid.Column="1" Orientation="Vertical">
+            <TextBlock  Margin="5" FontSize="20" TextTrimming="CharacterEllipsis" Text="{Binding ElementName=PlaylistListViewItem, Path=PlaylistName, Mode=OneWay}"  ToolTipService.ToolTip="{Binding ElementName=PlaylistListViewItem, Path=PlaylistName, Mode=OneWay}"/>
+            <StackPanel Margin="10" Orientation="Horizontal">
+                <TextBlock FontSize="15" Text="Tracks:" />
+                <TextBlock Margin="5,0,0,0" FontSize="15" Text="{Binding ElementName=PlaylistListViewItem, Path=TracksCount}" />
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

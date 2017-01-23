@@ -47,13 +47,7 @@ namespace youtube_backgrounder
 		static DependencyProperty^ _TracksCountProperty;
 
 		void PlaylistPlayButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-	};
-
-	public ref class PlaylistItemsCountToStrConverter sealed : Windows::UI::Xaml::Data::IValueConverter
-	{
-	public:
-
-		virtual Platform::Object^ Convert(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language);
-		virtual Platform::Object^ ConvertBack(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language);
+		void PlaylistListViewItem_PointerMoved(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
+		void PlaylistListViewItem_PointerExited(Platform::Object^ sender, Windows::UI::Xaml::Input::PointerRoutedEventArgs^ e);
 	};
 }

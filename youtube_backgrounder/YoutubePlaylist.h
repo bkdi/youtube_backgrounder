@@ -5,7 +5,7 @@
 namespace youtube_backgrounder
 {
 	[Windows::UI::Xaml::Data::Bindable]
-	public ref class YoutubePlaylist sealed
+	public ref class YoutubePlaylist sealed : public INotifyPropertyChanged
 	{
 	public:
 		YoutubePlaylist(Platform::String^ playlistName);
@@ -31,6 +31,15 @@ namespace youtube_backgrounder
 		void clear();
 		void reset();
 		IVector<YoutubeItem^>^ getItems();
+
+		virtual event PropertyChangedEventHandler^ PropertyChanged;
+
+	protected:
+		void OnPropertyChanged(Platform::String^ name)
+		{
+			PropertyChanged(this, ref new PropertyChangedEventArgs(name));
+		}
+
 
 	private:
 		YoutubeItemsCollections^ itemsCollection;

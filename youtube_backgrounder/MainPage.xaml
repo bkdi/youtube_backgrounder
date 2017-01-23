@@ -16,9 +16,17 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <SplitView x:Name="MenuSplitView" DisplayMode="CompactOverlay" IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="170" PaneBackground="Black">
+    <Page.DataContext>
+        <local:YoutubePlaylistsCollection/>
+    </Page.DataContext>
+
+    <SplitView x:Name="MenuSplitView" DisplayMode="CompactOverlay" IsPaneOpen="False" CompactPaneLength="48" OpenPaneLength="400" PaneBackground="Black">
         <SplitView.Pane>
             <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -29,9 +37,9 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" x:Name="MenuButton" ToolTipService.ToolTip="Menu" Style="{StaticResource SplitViewMenuButtonStyle}" Click="MenuButton_Click"/>
+                <Button Grid.Row="0" x:Name="MenuButton" ToolTipService.ToolTip="Menu" ToolTipService.Placement="Right" Style="{StaticResource SplitViewMenuButtonStyle}" Click="MenuButton_Click"/>
                 <RadioButton Grid.Row="1" x:Name="SearchButton" Tag="&#xE71E;" Content="Search" ToolTipService.ToolTip="Search" Style="{StaticResource SplitViewNavButtonStyle}" IsChecked="True" Click="SearchButton_Click" />
-                <RadioButton Grid.Row="2" x:Name="PlaylistsButton" Tag="&#xE90B;" Content="Playlists" ToolTipService.ToolTip="Playlists" Style="{StaticResource SplitViewNavButtonStyle}" Click="PlaylistsButton_Click"/>
+                <RadioButton Grid.Row="2" x:Name="PlaylistsButton" Tag="&#xE90B;" Content="Playlists" ToolTipService.ToolTip="Playlists" Style="{StaticResource SplitViewNavButtonStyle}" Click="PlaylistsButton_Click" />
                 <RadioButton Grid.Row="3" x:Name="NowPlayingButton" Tag="&#xEC4F;" Content="Now playing" ToolTipService.ToolTip="Now playing" Style="{StaticResource SplitViewNavButtonStyle}" Click="NowPlayingButton_Click"/>
                 <Button Grid.Row="5" x:Name="WindowProportionButton" Tag="&#x00BD;" Content="Proportion" Style="{StaticResource SplitViewButtonStyle2}" Click="WindowProportionButton_Click"/>
                 <Button Grid.Row="6" x:Name="SettingsButton" Tag="&#59155;" Content="Settings" ToolTipService.ToolTip="Settings" Style="{StaticResource SplitViewButtonStyle}">
@@ -50,6 +58,29 @@
                     </Button.Flyout>
                 </Button>
                 <Button Grid.Row="7" Tag="" Content="About" Style="{StaticResource SplitViewButtonStyle}" />
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button x:Name="AddPlaylistButton" Tag="&#59152;" Content="" Style="{StaticResource SplitViewButtonStyle}" ToolTipService.ToolTip="Add playlist" ToolTipService.Placement="Right" Click="AddPlaylistButton_Click" />
+                    <Button x:Name="DeletePlaylistButton"  Tag="&#59153;" Content="" Style="{StaticResource SplitViewButtonStyle}" ToolTipService.ToolTip="Delete playlist" ToolTipService.Placement="Right" Click="DeletePlaylistButton_Click"/>
+                </StackPanel>
+                <ListView Grid.Column="1" Grid.Row="1" Grid.RowSpan="7" x:Name="PlaylistsListView" ItemsSource="{Binding PlaylistItems}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <local:PlaylistListViewItemControl PlaylistName="{Binding Name}" TracksCount="{Binding TracksCount}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="BorderThickness" Value="0,0,2,2"/>
+                            <Setter Property="BorderBrush" Value="Black"/>
+                            <Setter Property="Background" Value="{StaticResource BackgroundPageDefault}"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
             </Grid>
         </SplitView.Pane>
         <SplitView.Content>
