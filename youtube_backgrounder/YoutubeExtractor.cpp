@@ -50,7 +50,7 @@ void YoutubeExtractor::getVideoConfiguration()
 void YoutubeExtractor::getPlayerUrl(const boost::property_tree::wptree& pt)
 {
 	auto item = pt.get_child(L"assets");
-	playerUrl = "http:" + ref new Platform::String(item.find(L"js")->second.get_value<std::wstring>().c_str());
+	playerUrl = "https://www.youtube.com" + ref new Platform::String(item.find(L"js")->second.get_value<std::wstring>().c_str());
 }
 
 void YoutubeExtractor::getVideosUrls(const boost::property_tree::wptree& pt)
