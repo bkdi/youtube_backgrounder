@@ -8,6 +8,7 @@
 #include "SearchPage.xaml.h"
 #include "SettingsPage.xaml.h"
 #include "PlaylistsPage.xaml.h"
+#include "PlayerPage.xaml.h"
 #include "NowPlayingPage.xaml.h"
 #include "PlaylistIO.h"
 #include "ContentDialogTextInput.xaml.h"
@@ -208,4 +209,19 @@ void youtube_backgrounder::MainPage::DeletePlaylistButton_Click(Platform::Object
 
 		playlists->DeletePlaylist(playlist);
 	}
+}
+
+
+void youtube_backgrounder::MainPage::PlaylistListViewItemControl_PlayButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	auto element = safe_cast<FrameworkElement^> (sender);
+	auto playlist = (safe_cast<YoutubePlaylist^> (element->DataContext));
+
+	nowPlayingPlaylist->reset();
+	nowPlayingPlaylist->Name = playlist->Name;
+	for (auto item : playlist->Items)
+		nowPlayingPlaylist->add(item);
+
+	MenuSplitView->IsPaneOpen = false;
+	PlayerFrame->Navigate(TypeName(PlayerPage::typeid), nowPlayingPlaylist);
 }

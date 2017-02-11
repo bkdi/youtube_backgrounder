@@ -58,15 +58,16 @@
                     </Button.Flyout>
                 </Button>
                 <Button Grid.Row="7" Tag="" Content="About" Style="{StaticResource SplitViewButtonStyle}" />
-
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button x:Name="AddPlaylistButton" Tag="&#59152;" Content="" Style="{StaticResource SplitViewButtonStyle}" ToolTipService.ToolTip="Add playlist" ToolTipService.Placement="Right" Click="AddPlaylistButton_Click" />
-                    <Button x:Name="DeletePlaylistButton"  Tag="&#59153;" Content="" Style="{StaticResource SplitViewButtonStyle}" ToolTipService.ToolTip="Delete playlist" ToolTipService.Placement="Right" Click="DeletePlaylistButton_Click"/>
-                </StackPanel>
-                <ListView Grid.Column="1" Grid.Row="1" Grid.RowSpan="7" x:Name="PlaylistsListView" ItemsSource="{Binding PlaylistItems}">
-                    <ListView.ItemTemplate>
+                <ListView Grid.Column="1" Grid.RowSpan="7" x:Name="PlaylistsListView" ItemsSource="{Binding PlaylistItems}">
+                    <ListView.Header>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button x:Name="AddPlaylistButton" Tag="&#59152;" Content="" Style="{StaticResource SplitViewButtonStyle}" ToolTipService.ToolTip="Add playlist" ToolTipService.Placement="Right" Click="AddPlaylistButton_Click" />
+                            <Button x:Name="DeletePlaylistButton"  Tag="&#59153;" Content="" Style="{StaticResource SplitViewButtonStyle}" ToolTipService.ToolTip="Delete playlist" ToolTipService.Placement="Right" Click="DeletePlaylistButton_Click"/>
+                        </StackPanel>
+                    </ListView.Header>
+                        <ListView.ItemTemplate>
                         <DataTemplate>
-                            <local:PlaylistListViewItemControl PlaylistName="{Binding Name}" TracksCount="{Binding TracksCount}"/>
+                            <local:PlaylistListViewItemControl PlaylistName="{Binding Name}" TracksCount="{Binding TracksCount}" PlayButtonClick="PlaylistListViewItemControl_PlayButtonClick"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                     <ListView.ItemContainerStyle>
