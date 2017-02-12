@@ -8,6 +8,7 @@ namespace youtube_backgrounder
 	public ref class YoutubePlaylist sealed : public INotifyPropertyChanged
 	{
 	public:
+		YoutubePlaylist();
 		YoutubePlaylist(Platform::String^ playlistName);
 
 		property Platform::String^ Name;
@@ -33,6 +34,17 @@ namespace youtube_backgrounder
 		IVector<YoutubeItem^>^ getItems();
 
 		virtual event PropertyChangedEventHandler^ PropertyChanged;
+		property Windows::Foundation::EventRegistrationToken eventToken;
+
+		property int NowPlayingIndex
+		{
+			int get() { return nowPlayingIndex; }
+			void set(int value)
+			{
+				nowPlayingIndex = value;
+				OnPropertyChanged(L"NowPlayingIndex");
+			}
+		}
 
 	protected:
 		void OnPropertyChanged(Platform::String^ name)
@@ -43,6 +55,7 @@ namespace youtube_backgrounder
 
 	private:
 		YoutubeItemsCollections^ itemsCollection;
+		int nowPlayingIndex;
 	};
 
 	[Windows::UI::Xaml::Data::Bindable]

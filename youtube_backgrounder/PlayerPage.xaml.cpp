@@ -40,6 +40,14 @@ void PlayerPage::InitializeTransportControls()
 	// Register to handle the following system transpot control buttons.
 	systemControls->IsPlayEnabled = true;
 	systemControls->IsPauseEnabled = true;
+	systemControls->IsPreviousEnabled = true;
+	systemControls->IsNextEnabled = true;
+}
+
+void PlayerPage::PlayItem(Platform::Object^ sender, PropertyChangedEventArgs^ e)
+{
+	if(nowPlayingPlaylist->NowPlayingIndex >= 0)
+		playItem(nowPlayingPlaylist->Items->GetAt(nowPlayingPlaylist->NowPlayingIndex));
 }
 
 void PlayerPage::SystemControls_ButtonPressed(SystemMediaTransportControls^ sender, SystemMediaTransportControlsButtonPressedEventArgs^ args)
@@ -51,6 +59,12 @@ void PlayerPage::SystemControls_ButtonPressed(SystemMediaTransportControls^ send
 		break;
 	case SystemMediaTransportControlsButton::Pause:
 		PauseMedia();
+		break;
+	case SystemMediaTransportControlsButton::Next:
+		NextItem();
+		break;
+	case SystemMediaTransportControlsButton::Previous:
+		PreviousItem();
 		break;
 	default:
 		break;
@@ -70,6 +84,24 @@ void PlayerPage::PauseMedia()
 	this->Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::Normal, ref new Windows::UI::Core::DispatchedHandler([this]()
 	{
 		musicPlayer->Pause();
+	}));
+}
+
+void PlayerPage::NextItem()
+{
+	this->Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::Normal, ref new Windows::UI::Core::DispatchedHandler([this]()
+	{
+		if (nowPlayingPlaylist->NowPlayingIndex < nowPlayingPlaylist->Items->Size - 1)
+			++nowPlayingPlaylist->NowPlayingIndex;
+	}));
+}
+
+void PlayerPage::PreviousItem()
+{
+	this->Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::Normal, ref new Windows::UI::Core::DispatchedHandler([this]()
+	{
+		if (nowPlayingPlaylist->NowPlayingIndex > 0)
+			--nowPlayingPlaylist->NowPlayingIndex;
 	}));
 }
 
@@ -96,22 +128,18 @@ void PlayerPage::MusicPlayer_CurrentStateChanged(Platform::Object^ sender, Windo
 
 void PlayerPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
-	auto nowPlayingPlaylist = (safe_cast<YoutubePlaylist^> (e->Parameter));
+	nowPlayingPlaylist = (safe_cast<YoutubePlaylist^> (e->Parameter));
+	nowPlayingPlaylist->eventToken = nowPlayingPlaylist->PropertyChanged += ref new PropertyChangedEventHandler(this, &PlayerPage::PlayItem);
 
-	for(auto item : nowPlayingPlaylist->Items)
-		item->NowPlaying = false;
-
-	playlistIterator = nowPlayingPlaylist->Items->First();
-	playItem(playlistIterator->Current);
+	nowPlayingPlaylist->NowPlayingIndex = 0;
 }
 
 void youtube_backgrounder::PlayerPage::musicPlayer_MediaEnded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {	
 	try
 	{
-		playlistIterator->Current->NowPlaying = false;
-		if (playlistIterator->MoveNext() && playlistIterator->HasCurrent)
-			playItem(playlistIterator->Current);
+		if (nowPlayingPlaylist->NowPlayingIndex < nowPlayingPlaylist->Items->Size - 1)
+			++nowPlayingPlaylist->NowPlayingIndex;
 	}
 	catch (Platform::ChangedStateException^)
 	{
@@ -142,5 +170,5 @@ void PlayerPage::playItem(YoutubeItem^ item)
 
 void PlayerPage::musicPlayer_MediaOpened(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	playlistIterator->Current->NowPlaying = true;
+
 }

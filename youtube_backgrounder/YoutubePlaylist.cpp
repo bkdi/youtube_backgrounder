@@ -3,6 +3,11 @@
 
 namespace youtube_backgrounder
 {
+	YoutubePlaylist::YoutubePlaylist()
+	{
+		itemsCollection = ref new YoutubeItemsCollections;
+	}
+
 	YoutubePlaylist::YoutubePlaylist(Platform::String^ playlistName)
 	{
 		itemsCollection = ref new YoutubeItemsCollections;
@@ -18,14 +23,15 @@ namespace youtube_backgrounder
 	void YoutubePlaylist::clear()
 	{
 		itemsCollection->Clear();
+		NowPlayingIndex = -1;
 		OnPropertyChanged("TracksCount");
 	}
 
 	void YoutubePlaylist::reset()
 	{
+		PropertyChanged -= eventToken;
 		clear();
 		Name = L"";
-		OnPropertyChanged("TracksCount");
 	}
 
 	IVector<YoutubeItem^>^ YoutubePlaylist::getItems()

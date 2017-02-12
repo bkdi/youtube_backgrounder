@@ -121,5 +121,6 @@
     <Page Include="ContentDialogAddToPlaylist.xaml" />
     <Page Include="PlaylistListViewItemControl.xaml" />
     <Page Include="NowPlayingPage.xaml" />
+    <Page Include="NowPlayingListViewItemStyle.xaml" />
   </ItemGroup>
 </Project>

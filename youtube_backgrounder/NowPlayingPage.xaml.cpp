@@ -6,8 +6,6 @@
 #include "pch.h"
 #include "NowPlayingPage.xaml.h"
 
-#include "YoutubePlaylist.h"
-
 using namespace youtube_backgrounder;
 
 using namespace Platform;
@@ -30,7 +28,9 @@ NowPlayingPage::NowPlayingPage()
 
 void NowPlayingPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
-	NowPlayingListView->ItemsSource = (safe_cast<YoutubePlaylist^> (e->Parameter))->Items;
+	nowPlayingPlaylist = (safe_cast<YoutubePlaylist^> (e->Parameter));
+	DataContext = nowPlayingPlaylist;
+	//NowPlayingListView->ItemsSource = nowPlayingPlaylist->Items;
 }
 
 Platform::Object^ NowPlayingBackgroundConverter::Convert(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language)

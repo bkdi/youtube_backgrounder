@@ -7,6 +7,8 @@
 
 #include "NowPlayingPage.g.h"
 
+#include "YoutubePlaylist.h"
+
 namespace youtube_backgrounder
 {
 	/// <summary>
@@ -20,6 +22,9 @@ namespace youtube_backgrounder
 
 	protected:
 		void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
+
+	private:
+		YoutubePlaylist^ nowPlayingPlaylist;
 	};
 
 	public ref class NowPlayingBackgroundConverter sealed : Windows::UI::Xaml::Data::IValueConverter

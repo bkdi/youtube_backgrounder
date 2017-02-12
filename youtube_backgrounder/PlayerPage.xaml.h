@@ -26,15 +26,18 @@ namespace youtube_backgrounder
 
 	private:
 		SystemMediaTransportControls^ systemControls;
-		IIterator<YoutubeItem^>^ playlistIterator;
+		YoutubePlaylist^ nowPlayingPlaylist;
 
 		void InitializeTransportControls();
 		void SystemControls_ButtonPressed(SystemMediaTransportControls^ sender, SystemMediaTransportControlsButtonPressedEventArgs^ args);
 		void PlayMedia();
 		void PauseMedia();
+		void NextItem();
+		void PreviousItem();
 		void MusicPlayer_CurrentStateChanged(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void musicPlayer_MediaEnded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 
+		void PlayItem(Platform::Object^ sender, PropertyChangedEventArgs^ e);
 		void playItem(YoutubeItem^ item);
 		void musicPlayer_MediaOpened(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
