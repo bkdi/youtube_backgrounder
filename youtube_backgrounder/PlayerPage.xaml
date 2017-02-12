@@ -16,6 +16,6 @@
     </Page.Resources>
 
     <Grid Background="Black">
-        <MediaElement x:Name="musicPlayer" AudioCategory="BackgroundCapableMedia" CurrentStateChanged="MusicPlayer_CurrentStateChanged" Visibility="Visible" AreTransportControlsEnabled="True" AutoPlay="True" MediaOpened="musicPlayer_MediaOpened" MediaEnded="musicPlayer_MediaEnded"/>
+        <MediaElement x:Name="musicPlayer" AudioCategory="Media" CurrentStateChanged="MusicPlayer_CurrentStateChanged" Visibility="Visible" AreTransportControlsEnabled="True" AutoPlay="True" MediaOpened="musicPlayer_MediaOpened" MediaEnded="musicPlayer_MediaEnded" RealTimePlayback="True"/>
     </Grid>
 </Page>
