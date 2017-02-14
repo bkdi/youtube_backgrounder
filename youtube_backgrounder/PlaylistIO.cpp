@@ -29,7 +29,7 @@ namespace youtube_backgrounder
 			{
 				t.get();
 			}
-			catch (Platform::COMException^)
+			catch (Platform::COMException^) // odpowiednik w c++cx dla System.IO.FileNotFoundException 
 			{
 
 			}
