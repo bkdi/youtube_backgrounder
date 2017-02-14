@@ -5,6 +5,7 @@
 
 #include "pch.h"
 #include "ContentDialogAddToPlaylist.xaml.h"
+#include "PlaylistIO.h"
 
 using namespace youtube_backgrounder;
 
@@ -21,7 +22,7 @@ using namespace Windows::UI::Xaml::Navigation;
 
 // The Content Dialog item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
-youtube_backgrounder::ContentDialogAddToPlaylist::ContentDialogAddToPlaylist(YoutubePlaylistsCollection^ playlists, YoutubeItem^ youtubeItem) : item(youtubeItem)
+youtube_backgrounder::ContentDialogAddToPlaylist::ContentDialogAddToPlaylist(YoutubePlaylistsCollection^ playlists_, YoutubeItem^ youtubeItem) : item(youtubeItem), playlists(playlists_)
 {
 	InitializeComponent();
 	PlaylistsComboBox->ItemsSource = playlists->PlaylistItems;
@@ -30,6 +31,8 @@ youtube_backgrounder::ContentDialogAddToPlaylist::ContentDialogAddToPlaylist(You
 void youtube_backgrounder::ContentDialogAddToPlaylist::ContentDialog_PrimaryButtonClick(Windows::UI::Xaml::Controls::ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogButtonClickEventArgs^ args)
 {
 	(safe_cast<YoutubePlaylist^> (PlaylistsComboBox->SelectedItem))->add(item);
+	auto playlistLoader = ref new PlaylistIO();
+	playlistLoader->Write(playlists);
 }
 
 void youtube_backgrounder::ContentDialogAddToPlaylist::ContentDialog_SecondaryButtonClick(Windows::UI::Xaml::Controls::ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogButtonClickEventArgs^ args)

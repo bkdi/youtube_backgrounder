@@ -14,9 +14,10 @@ namespace youtube_backgrounder
 	public ref class ContentDialogAddToPlaylist sealed
 	{
 	public:
-		ContentDialogAddToPlaylist(YoutubePlaylistsCollection^ playlists, YoutubeItem^ youtubeItem);
+		ContentDialogAddToPlaylist(YoutubePlaylistsCollection^ playlists_, YoutubeItem^ youtubeItem);
 	private:
 		YoutubeItem^ item;
+		YoutubePlaylistsCollection^ playlists;
 
 		void ContentDialog_PrimaryButtonClick(Windows::UI::Xaml::Controls::ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogButtonClickEventArgs^ args);
 		void ContentDialog_SecondaryButtonClick(Windows::UI::Xaml::Controls::ContentDialog^ sender, Windows::UI::Xaml::Controls::ContentDialogButtonClickEventArgs^ args);
