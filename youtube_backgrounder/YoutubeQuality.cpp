@@ -12,6 +12,7 @@ const std::vector<YoutubeQualityItag> youtube_backgrounder::sortedNonDASH_2DVide
 	YoutubeQualityItag::Non_DASH_2D_3GP_Low,	
 	YoutubeQualityItag::Non_DASH_2D_FLV_Low,	
 	YoutubeQualityItag::Non_DASH_2D_MP4_Medium,	
+	YoutubeQualityItag::Non_DASH_2D_WebM_Medium,
 	YoutubeQualityItag::Non_DASH_2D_MP4_High		
 };
 
