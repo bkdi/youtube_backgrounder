@@ -38,9 +38,7 @@ void PlaylistsPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEvent
 {
 	inputParams = safe_cast<PlaylistsPageNavParam^> (e->Parameter);
 
-	PlaylistsListView->ItemsSource = inputParams->Playlists->PlaylistItems;
-	NowPlayingPlaylist = inputParams->NowPlayingPlaylist;
-	PlayerFrame = inputParams->PlayerFrame;
+	PlaylistItemsGridView->ItemsSource = inputParams->Playlist->Items;
 }
 
 void PlaylistsPage::ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e)
@@ -49,80 +47,25 @@ void PlaylistsPage::ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows:
 
 	if (e->NewSize.Width != e->PreviousSize.Width)
 	{
-		for (unsigned int i = 1; ; ++i)
+		double itemWidth;
+		if (e->NewSize.Width < 2 * minItemWidth)
 		{
-			auto itemWidth = e->NewSize.Width / i;
-			if (itemWidth >= minItemWidth && itemWidth <= maxItemWidth)
+			itemWidth = e->NewSize.Width;
+			if (itemWidth > maxItemWidth)
+				itemWidth = maxItemWidth;
+			else if (itemWidth < minItemWidth)
+				itemWidth = minItemWidth;
+		}
+		else
+		{
+			for (unsigned int i = 1; ; ++i)
 			{
-				itemWrapGrid->ItemWidth = itemWidth;
-				itemWrapGrid->ItemHeight = itemWidth / (4.0 / 3.0);
-				break;
+				itemWidth = e->NewSize.Width / i;
+				if (itemWidth >= minItemWidth && itemWidth <= maxItemWidth)
+					break;
 			}
 		}
+		itemWrapGrid->ItemWidth = itemWidth;
+		itemWrapGrid->ItemHeight = itemWidth / (4.0 / 3.0);
 	}
-}
-
-/*double itemWidth = 0.0;
-for (unsigned int i = 1; i <= gridresult->Items->Size; ++i)
-{
-	itemWidth = e->NewSize.Width / i;
-	if (itemWidth >= minItemWidth && itemWidth <= maxItemWidth)
-		break;
-}
-if (itemWidth > maxItemWidth)
-itemWidth = maxItemWidth;
-else if (itemWidth < minItemWidth)
-	itemWidth = minItemWidth;
-
-itemWrapGrid->ItemWidth = itemWidth;
-itemWrapGrid->ItemHeight = itemWidth / (4.0 / 3.0);*/
-
-void PlaylistsPage::AddNewPlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
-{
-	auto dialogPlaylistNameInput = ref new ContentDialogTextInput(inputParams->Playlists);
-
-	concurrency::create_task(dialogPlaylistNameInput->ShowAsync()).then([this, dialogPlaylistNameInput](Controls::ContentDialogResult result)
-	{
-		if (result == Controls::ContentDialogResult::Primary)
-		{
-			auto playlist = ref new YoutubePlaylist(dialogPlaylistNameInput->Text);
-			inputParams->Playlists->AppendPlaylist(playlist);
-			auto playlistLoader = ref new PlaylistIO;
-			playlistLoader->Write(inputParams->Playlists);
-		}
-	});
-}
-
-void PlaylistsPage::DeletePlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
-{
-	if (PlaylistsListView->SelectedItem != nullptr)
-	{
-		auto playlist = safe_cast<YoutubePlaylist^> (PlaylistsListView->SelectedItem);
-		playlist->clear();
-
-		inputParams->Playlists->DeletePlaylist(playlist);
-	}
-}
-
-void PlaylistsPage::PlaylistsListView_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e)
-{
-	if (PlaylistsListView->SelectedItem != nullptr)
-	{
-		auto playlist = safe_cast<YoutubePlaylist^> (PlaylistsListView->SelectedItem);
-
-		PlaylistItemsGridView->ItemsSource = playlist->getItems();
-	}
-}
-
-void PlaylistsPage::PlaylistListViewItemControl_PlayButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
-{
-	auto element = safe_cast<FrameworkElement^> (sender);
-	auto playlist = (safe_cast<YoutubePlaylist^> (element->DataContext));
-
-	inputParams->NowPlayingPlaylist->reset();
-	inputParams->NowPlayingPlaylist->Name = playlist->Name;
-	for (auto item : playlist->Items)
-		inputParams->NowPlayingPlaylist->add(item);
-
-	PlayerFrame->Navigate(TypeName(PlayerPage::typeid), inputParams->NowPlayingPlaylist);
 }

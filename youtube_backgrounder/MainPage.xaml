@@ -58,7 +58,7 @@
                     </Button.Flyout>
                 </Button>
                 <Button Grid.Row="7" Tag="" Content="About" Style="{StaticResource SplitViewButtonStyle}" />
-                <ListView Grid.Column="1" Grid.RowSpan="7" x:Name="PlaylistsListView" ItemsSource="{Binding PlaylistItems}">
+                <ListView Grid.Column="1" Grid.RowSpan="7" x:Name="PlaylistsListView" ItemsSource="{Binding PlaylistItems}" SelectionChanged="PlaylistsListView_SelectionChanged" >
                     <ListView.Header>
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                             <Button x:Name="AddPlaylistButton" Tag="&#59152;" Content="" Style="{StaticResource SplitViewButtonStyle}" ToolTipService.ToolTip="Add playlist" ToolTipService.Placement="Right" Click="AddPlaylistButton_Click" />

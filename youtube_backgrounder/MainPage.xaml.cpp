@@ -225,3 +225,17 @@ void youtube_backgrounder::MainPage::PlaylistListViewItemControl_PlayButtonClick
 	MenuSplitView->IsPaneOpen = false;
 	PlayerFrame->Navigate(TypeName(PlayerPage::typeid), nowPlayingPlaylist);
 }
+
+void youtube_backgrounder::MainPage::PlaylistsListView_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e)
+{
+	if (PlaylistsListView->SelectedItem != nullptr)
+	{
+		PlaylistsPageNavParam^ navParam = ref new PlaylistsPageNavParam(safe_cast<YoutubePlaylist^> (PlaylistsListView->SelectedItem));
+		PlaylistsFrame->Navigate(TypeName(PlaylistsPage::typeid), navParam);
+
+		PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
+
+		SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+		NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+	}
+}

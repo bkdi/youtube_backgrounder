@@ -15,16 +15,12 @@ namespace youtube_backgrounder
 	public ref class PlaylistsPageNavParam sealed
 	{
 	public:
-		PlaylistsPageNavParam(YoutubePlaylistsCollection^ playlists, YoutubePlaylist^ nowPlayingPlaylist, Controls::Frame^ frame)
+		PlaylistsPageNavParam(YoutubePlaylist^ playlist) 
 		{
-			Playlists = playlists;
-			PlayerFrame = frame;
-			NowPlayingPlaylist = nowPlayingPlaylist;
+			Playlist = playlist;
 		}
 
-		property YoutubePlaylistsCollection^ Playlists;
-		property YoutubePlaylist^ NowPlayingPlaylist;
-		property Controls::Frame^ PlayerFrame;
+		property YoutubePlaylist^ Playlist;
 	};
 
 	/// <summary>
@@ -61,10 +57,5 @@ namespace youtube_backgrounder
 		static DependencyProperty^ _NowPlayingPlaylistProperty;
 
 		void ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e);
-		void AddNewPlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void PlaylistsListView_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);
-		void DeletePlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void PlaylistListViewItemControl_ButtonClicked(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void PlaylistListViewItemControl_PlayButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }
