@@ -6,6 +6,7 @@
 #include "pch.h"
 #include "SearchPage.xaml.h"
 #include "PlayerPage.xaml.h"
+#include "YoutubeAPI_const.h"
 
 using namespace youtube_backgrounder;
 
@@ -49,7 +50,7 @@ void SearchPage::loadYoutubeItems()
 {
 	auto httpClient = ref new HttpClient();
 
-	Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=" + inputParams->Title + L"&type=video&key=AIzaSyCIM4EzNqi1in22f4Z3Ru3iYvLaY8tc3bo";
+	Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=" + inputParams->Title + L"&type=video&key=" + YoutubeAPI::YOUTUBE_API_KEY;
 	if (!nextPageToken->IsEmpty())
 		url += L"&pageToken=" + nextPageToken;
 
@@ -102,16 +103,26 @@ void SearchPage::ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI
 
 	if (e->NewSize.Width != e->PreviousSize.Width)
 	{
-		for (unsigned int i = 1; ; ++i)
+		double itemWidth;
+		if (e->NewSize.Width < 2 * minItemWidth)
 		{
-			auto itemWidth = e->NewSize.Width / i;
-			if (itemWidth >= minItemWidth && itemWidth <= maxItemWidth)
+			itemWidth = e->NewSize.Width;
+			if (itemWidth > maxItemWidth)
+				itemWidth = maxItemWidth;
+			else if (itemWidth < minItemWidth)
+				itemWidth = minItemWidth;
+		}
+		else
+		{
+			for (unsigned int i = 1; ; ++i)
 			{
-				itemWrapGrid->ItemWidth = itemWidth;
-				itemWrapGrid->ItemHeight = itemWidth / (4.0/3.0);
-				break;
+				itemWidth = e->NewSize.Width / i;
+				if (itemWidth >= minItemWidth && itemWidth <= maxItemWidth)
+					break;
 			}
 		}
+		itemWrapGrid->ItemWidth = itemWidth;
+		itemWrapGrid->ItemHeight = itemWidth / (4.0 / 3.0);
 	}
 }
 
