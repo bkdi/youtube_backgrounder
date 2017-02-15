@@ -21,6 +21,7 @@ namespace youtube_backgrounder
 	private:
 		YoutubePlaylist^ nowPlayingPlaylist;
 		YoutubePlaylistsCollection^ playlists;
+		bool querySubmitted;
 
 		void MenuButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);

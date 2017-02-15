@@ -33,6 +33,7 @@ using namespace Windows::Web::Http;
 MainPage::MainPage()
 {
 	InitializeComponent();
+	querySubmitted = false;
 	playlists = ref new YoutubePlaylistsCollection;
 	nowPlayingPlaylist = ref new YoutubePlaylist(L"");
 
@@ -42,6 +43,8 @@ MainPage::MainPage()
 
 	SearchPageNavParam^ navParam = ref new SearchPageNavParam(L"", PlayerFrame, playlists, nowPlayingPlaylist);
 	SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
+
+	PlayerFrame->Navigate(TypeName(PlayerPage::typeid), L"");
 }
 
 void MainPage::MenuButton_Click(Platform::Object^ sender, RoutedEventArgs^ e)
@@ -63,17 +66,9 @@ void MainPage::SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::R
 
 void MainPage::PlaylistsButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
+	PlaylistsListView->SelectedItem = nullptr;
 	MenuSplitView->OpenPaneLength = 500;
 	MenuSplitView->IsPaneOpen = true;
-	/*(safe_cast<RadioButton^> (sender))->IsChecked = true;
-
-	PlaylistsPageNavParam^ navParam = ref new PlaylistsPageNavParam(playlists, nowPlayingPlaylist, PlayerFrame);
-	PlaylistsFrame->Navigate(TypeName(PlaylistsPage::typeid), navParam);
-
-	PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
-
-	SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
-	NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;*/
 }
 
 void MainPage::NowPlayingButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
@@ -93,6 +88,7 @@ void MainPage::AutoSuggestBox_QuerySubmitted(Windows::UI::Xaml::Controls::AutoSu
 {
 	if (!sender->Text->IsEmpty())
 	{
+		querySubmitted = true;
 		sender->IsSuggestionListOpen = false;
 
 		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame, playlists, nowPlayingPlaylist);
@@ -111,28 +107,33 @@ void MainPage::AutoSuggestBox_TextChanged(Windows::UI::Xaml::Controls::AutoSugge
 {
 	if (args->Reason == AutoSuggestionBoxTextChangeReason::UserInput && !sender->Text->IsEmpty())
 	{
-		auto httpClient = ref new HttpClient();
-		auto uri = ref new Uri(L"http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=" + sender->Text);
-
-		concurrency::create_task(httpClient->GetStringAsync(uri)).then([this, sender](Platform::String^ youtubeSuggestQueriesFile)
+		if (!querySubmitted)
 		{
-			auto suggestions = ref new Platform::Collections::Vector<Platform::String^>;
-			std::wstringstream jsonStream(youtubeSuggestQueriesFile->Data());
-			
-			boost::property_tree::wptree pt;
-			read_json(jsonStream, pt);
-			try
+			auto httpClient = ref new HttpClient();
+			auto uri = ref new Uri(L"http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=" + sender->Text);
+
+			concurrency::create_task(httpClient->GetStringAsync(uri)).then([this, sender](Platform::String^ youtubeSuggestQueriesFile)
 			{
-				//podpowiedzi występują w drugim elemencie bez nazwy
-				for (auto item : pt.get_child(L"").rbegin()->second)
-					suggestions->Append(ref new Platform::String(item.second.get_value<std::wstring>().c_str()));
-			}
-			catch (const boost::property_tree::json_parser_error &)
-			{
-				//TODO:
-			}
-			sender->ItemsSource = suggestions;
-		});
+				auto suggestions = ref new Platform::Collections::Vector<Platform::String^>;
+				std::wstringstream jsonStream(youtubeSuggestQueriesFile->Data());
+
+				boost::property_tree::wptree pt;
+				read_json(jsonStream, pt);
+				try
+				{
+					//podpowiedzi występują w drugim elemencie bez nazwy
+					for (auto item : pt.get_child(L"").rbegin()->second)
+						suggestions->Append(ref new Platform::String(item.second.get_value<std::wstring>().c_str()));
+				}
+				catch (const boost::property_tree::json_parser_error &)
+				{
+					//TODO:
+				}
+				sender->ItemsSource = suggestions;
+			});
+		}
+		else
+			querySubmitted = false;
 	}
 }
 
@@ -152,33 +153,33 @@ void MainPage::WindowProportionButton_Click(Platform::Object^ sender, Windows::U
 	auto button = safe_cast<Button^> (sender);
 	switch (state)
 	{
-	/*case 0: 
-		button->Tag = L"0"; 
+		/*case 0:
+		button->Tag = L"0";
 
 		MainGrid->RowDefinitions->GetAt(1)->Height = GridLength(0, GridUnitType::Star);
 		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(1, GridUnitType::Star);
 		break;*/
-	case 0: 
-		button->Tag = L"\u00BC"; 
+	case 0:
+		button->Tag = L"\u00BC";
 		MainGrid->RowDefinitions->GetAt(1)->Height = GridLength(1, GridUnitType::Star);
 		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(3, GridUnitType::Star);
 		break;
-	case 1: 
-		button->Tag = L"\u00BD"; 
+	case 1:
+		button->Tag = L"\u00BD";
 		MainGrid->RowDefinitions->GetAt(1)->Height = GridLength(1, GridUnitType::Star);
 		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(1, GridUnitType::Star);
 		break;
-	case 2: 
-		button->Tag = L"\u00BE"; 
+	case 2:
+		button->Tag = L"\u00BE";
 		MainGrid->RowDefinitions->GetAt(1)->Height = GridLength(3, GridUnitType::Star);
 		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(1, GridUnitType::Star);
 		break;
-	/*case 4: 
-		button->Tag = L"1"; 
+		/*case 4:
+		button->Tag = L"1";
 
 		MainGrid->RowDefinitions->GetAt(1)->Height = GridLength(1, GridUnitType::Star);
 		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(0, GridUnitType::Star);
-		
+
 		break;*/
 	}
 }

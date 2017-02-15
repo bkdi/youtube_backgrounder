@@ -31,6 +31,17 @@ PlayerPage::PlayerPage()
 	InitializeTransportControls();
 }
 
+void PlayerPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
+{
+	if (e->Parameter != nullptr)
+	{
+		nowPlayingPlaylist = (safe_cast<YoutubePlaylist^> (e->Parameter));
+		nowPlayingPlaylist->eventToken = nowPlayingPlaylist->PropertyChanged += ref new PropertyChangedEventHandler(this, &PlayerPage::PlayItem);
+
+		nowPlayingPlaylist->NowPlayingIndex = 0;
+	}
+}
+
 void PlayerPage::InitializeTransportControls()
 {
 	// Hook up app to system transport controls.
@@ -126,14 +137,6 @@ void PlayerPage::MusicPlayer_CurrentStateChanged(Platform::Object^ sender, Windo
 	}
 }
 
-void PlayerPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
-{
-	nowPlayingPlaylist = (safe_cast<YoutubePlaylist^> (e->Parameter));
-	nowPlayingPlaylist->eventToken = nowPlayingPlaylist->PropertyChanged += ref new PropertyChangedEventHandler(this, &PlayerPage::PlayItem);
-
-	nowPlayingPlaylist->NowPlayingIndex = 0;
-}
-
 void youtube_backgrounder::PlayerPage::musicPlayer_MediaEnded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {	
 	try
@@ -149,6 +152,9 @@ void youtube_backgrounder::PlayerPage::musicPlayer_MediaEnded(Platform::Object^ 
 
 void PlayerPage::playItem(YoutubeItem^ item)
 {
+	loadingProgress->Visibility = Windows::UI::Xaml::Visibility::Visible;
+	loadingProgress->IsActive = true;
+
 	auto preferedQuality = safe_cast<YoutubeQuality> (SettingsHelper::getPropertyUInt32(Settings::MATERIAL, Settings::Material::PREFEREDQUALITY));
 	YoutubeQualityItag preferedItag;
 	IVector<YoutubeQualityItag>^ sortedQualities;
@@ -164,11 +170,8 @@ void PlayerPage::playItem(YoutubeItem^ item)
 	{
 		if (!urlToPlay->IsEmpty())
 			musicPlayer->Source = ref new Uri(urlToPlay);
+
+		loadingProgress->IsActive = false;
+		loadingProgress->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
 	});
-}
-
-
-void PlayerPage::musicPlayer_MediaOpened(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
-{
-
 }

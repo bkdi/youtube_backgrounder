@@ -100,7 +100,7 @@
     <PackageCertificateKeyFile>youtube_backgrounder_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86</AppxBundlePlatforms>
+    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\v7;C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\boost_1_60_0;$(IncludePath)</IncludePath>
@@ -111,11 +111,18 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\boost_1_60_0;C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\v7;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <IncludePath>C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\v7;C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\boost_1_60_0;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <ClCompile>
-      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/bigobj -D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>4453;28204</DisableSpecificWarnings>
+      <PreprocessorDefinitions>_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;_CRT_SECURE_NO_WARNINGS;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <AdditionalOptions>/nodefaultlib:vccorlibd /nodefaultlib:msvcrtd vccorlibd.lib msvcrtd.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <ClCompile>
@@ -201,6 +208,7 @@
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </ClInclude>
     <ClInclude Include="tools_http.h" />
+    <ClInclude Include="YoutubeAPI_const.h" />
     <ClInclude Include="YoutubeExtractor.h" />
     <ClInclude Include="YoutubeItemData.h" />
     <ClInclude Include="YoutubePlaylist.h" />
@@ -273,6 +281,10 @@
       <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsWinRT>
       <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CompileAsWinRT>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <CompileAsWinRT Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">false</CompileAsWinRT>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">NotUsing</PrecompiledHeader>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE=1;%(ClCompile.PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="App.xaml.cpp">
       <DependentUpon>App.xaml</DependentUpon>
@@ -318,6 +330,7 @@
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="tools_http.cpp" />
+    <ClCompile Include="YoutubeAPI_const.cpp" />
     <ClCompile Include="YoutubeExtractor.cpp" />
     <ClCompile Include="YoutubeItemData.cpp" />
     <ClCompile Include="YoutubePlaylist.cpp" />

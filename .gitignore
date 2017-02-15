@@ -244,3 +244,4 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 /youtube_backgrounder/Generated Files
+/youtube_backgrounder/YoutubeAPI_const.cpp
