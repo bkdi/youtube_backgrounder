@@ -6,6 +6,7 @@
 #include "pch.h"
 #include "SearchPage.xaml.h"
 #include "PlayerPage.xaml.h"
+#include "PlayerPage2.xaml.h"
 #include "YoutubeAPI_const.h"
 
 using namespace youtube_backgrounder;
@@ -56,7 +57,8 @@ void SearchPage::loadYoutubeItems()
 
 	auto uri = ref new Uri(url);
 
-	concurrency::create_task(httpClient->GetStringAsync(uri)).then([this](Platform::String^ jsonSearchedList)
+	auto t = concurrency::create_task(httpClient->GetStringAsync(uri));
+	auto continuation = t.then([this](Platform::String^ jsonSearchedList)
 	{
 		std::wstringstream jsonStream(jsonSearchedList->Data());
 		boost::property_tree::wptree pt;
@@ -85,6 +87,17 @@ void SearchPage::loadYoutubeItems()
 		}
 
 		EmptyPageInfoStackPanel->Visibility = itemsCollection->YoutubeItems->Size > 0 ? Windows::UI::Xaml::Visibility::Collapsed : Windows::UI::Xaml::Visibility::Visible;
+	}).then([](concurrency::task<void> t)
+	{
+		try
+		{
+			t.get();
+		}
+		catch (Platform::COMException^ e)
+		{
+			auto dialog = ref new Windows::UI::Popups::MessageDialog("Error loading YouTube items. Please check your internet connection.");
+			dialog->ShowAsync();
+		}
 	});
 }
 
