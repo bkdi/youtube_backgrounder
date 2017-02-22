@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="youtube_backgrounder.PlayerPage"
+    x:Class="youtube_backgrounder.PlayerPage2"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:youtube_backgrounder"
@@ -18,10 +18,10 @@
     <Grid Background="Black">
         <ProgressRing x:Name="loadingProgress" Height="110" Width="110" Visibility="Collapsed" />
         <TextBlock Text="Starting..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Visibility="{Binding ElementName=loadingProgress, Path=Visibility}"/>
-        <MediaElement x:Name="musicPlayer" AudioCategory="Media" CurrentStateChanged="MusicPlayer_CurrentStateChanged" Visibility="Visible" AreTransportControlsEnabled="True" AutoPlay="True" MediaEnded="musicPlayer_MediaEnded" RealTimePlayback="True" >
-            <MediaElement.TransportControls>
+        <MediaPlayerElement x:Name="playerElement" Visibility="Visible" AreTransportControlsEnabled="True" AutoPlay="True" >
+            <MediaPlayerElement.TransportControls>
                 <MediaTransportControls IsNextTrackButtonVisible="True" IsPreviousTrackButtonVisible="True" />
-            </MediaElement.TransportControls>
-        </MediaElement>
+            </MediaPlayerElement.TransportControls>
+        </MediaPlayerElement>
     </Grid>
 </Page>
