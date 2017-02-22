@@ -34,6 +34,21 @@ namespace youtube_backgrounder
 		Name = L"";
 	}
 
+	void YoutubePlaylist::deleteItem(YoutubeItem^ item)
+	{
+		if (item != nullptr)
+		{
+			auto vec = getItems();
+
+			unsigned int index = 0;
+			if (vec->IndexOf(item, &index))
+			{
+				vec->RemoveAt(index);
+				OnPropertyChanged("TracksCount");
+			}
+		}
+	}
+
 	IVector<YoutubeItem^>^ YoutubePlaylist::getItems()
 	{
 		return itemsCollection->YoutubeItems;

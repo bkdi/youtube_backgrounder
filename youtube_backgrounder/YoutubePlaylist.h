@@ -31,6 +31,7 @@ namespace youtube_backgrounder
 		void add(YoutubeItem^ item);
 		void clear();
 		void reset();
+		void deleteItem(YoutubeItem^ item);
 		IVector<YoutubeItem^>^ getItems();
 
 		virtual event PropertyChangedEventHandler^ PropertyChanged;
