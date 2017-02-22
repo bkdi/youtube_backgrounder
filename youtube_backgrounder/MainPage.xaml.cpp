@@ -9,6 +9,7 @@
 #include "SettingsPage.xaml.h"
 #include "PlaylistsPage.xaml.h"
 #include "PlayerPage.xaml.h"
+#include "PlayerPage2.xaml.h"
 #include "NowPlayingPage.xaml.h"
 #include "PlaylistIO.h"
 #include "ContentDialogTextInput.xaml.h"
@@ -27,37 +28,59 @@ using namespace Windows::UI::Xaml::Controls;
 using namespace Windows::UI::Xaml;
 using namespace Windows::UI::Xaml::Interop;
 using namespace Windows::Web::Http;
+using namespace Windows::Networking::Connectivity;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 MainPage::MainPage()
 {
 	InitializeComponent();
+
+	NetworkInformation::NetworkStatusChanged += ref new NetworkStatusChangedEventHandler(this, &MainPage::NetworkInformation_NetworkStatusChanged);
+	PropertyChanged += ref new PropertyChangedEventHandler(this, &MainPage::InternetChanged);
+
+	Internet = true;
+	auto connections = NetworkInformation::GetInternetConnectionProfile();
+	Internet = connections != nullptr && connections->GetNetworkConnectivityLevel() == NetworkConnectivityLevel::InternetAccess;
+
 	querySubmitted = false;
 	playlists = ref new YoutubePlaylistsCollection;
 	nowPlayingPlaylist = ref new YoutubePlaylist(L"");
 
 	auto playlistLoader = ref new PlaylistIO;
 	playlistLoader->Read(&playlists);
-	PlaylistsListView->ItemsSource = playlists->PlaylistItems;
 
 	SearchPageNavParam^ navParam = ref new SearchPageNavParam(L"", PlayerFrame, playlists, nowPlayingPlaylist);
 	SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
 
-	PlayerFrame->Navigate(TypeName(PlayerPage::typeid), L"");
+	PlayerFrame->Navigate(TypeName(PlayerPage::typeid));
+}
+
+void MainPage::NetworkInformation_NetworkStatusChanged(Platform::Object^ sender)
+{
+	auto connections = NetworkInformation::GetInternetConnectionProfile();
+	this->Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::Normal, ref new Windows::UI::Core::DispatchedHandler([this, connections]()
+	{
+		Internet = connections != nullptr && connections->GetNetworkConnectivityLevel() == NetworkConnectivityLevel::InternetAccess;
+	}));
+}
+
+void MainPage::InternetChanged(Platform::Object^ sender, PropertyChangedEventArgs^ e)
+{
+	if (!Internet)
+	{
+		auto dialog = ref new Windows::UI::Popups::MessageDialog("Error internet connection. Internet was lost.");
+		dialog->ShowAsync();
+	}
 }
 
 void MainPage::MenuButton_Click(Platform::Object^ sender, RoutedEventArgs^ e)
 {
-	MenuSplitView->OpenPaneLength = 150;
 	MenuSplitView->IsPaneOpen = !MenuSplitView->IsPaneOpen;
 }
 
 void MainPage::SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	(safe_cast<RadioButton^> (sender))->IsChecked = true;
-	MenuSplitView->OpenPaneLength = 150;
-
 	SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
 
 	PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
@@ -66,16 +89,17 @@ void MainPage::SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::R
 
 void MainPage::PlaylistsButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	PlaylistsListView->SelectedItem = nullptr;
-	MenuSplitView->OpenPaneLength = 500;
-	MenuSplitView->IsPaneOpen = true;
+	PlaylistsPageNavParam^ navParam = ref new PlaylistsPageNavParam(playlists, nowPlayingPlaylist, PlayerFrame);
+	PlaylistsFrame->Navigate(TypeName(PlaylistsPage::typeid), navParam);
+
+	PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
+
+	SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
+	NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
 }
 
 void MainPage::NowPlayingButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {
-	(safe_cast<RadioButton^> (sender))->IsChecked = true;
-	MenuSplitView->OpenPaneLength = 150;
-
 	NowPlayingFrame->Navigate(TypeName(NowPlayingPage::typeid), nowPlayingPlaylist);
 
 	NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
@@ -88,6 +112,10 @@ void MainPage::AutoSuggestBox_QuerySubmitted(Windows::UI::Xaml::Controls::AutoSu
 {
 	if (!sender->Text->IsEmpty())
 	{
+		Platform::String^ s = sender->Text;
+		sender->Text = L"";
+		sender->Text = s;
+
 		querySubmitted = true;
 		sender->IsSuggestionListOpen = false;
 
@@ -107,34 +135,42 @@ void MainPage::AutoSuggestBox_TextChanged(Windows::UI::Xaml::Controls::AutoSugge
 {
 	if (args->Reason == AutoSuggestionBoxTextChangeReason::UserInput && !sender->Text->IsEmpty())
 	{
-		if (!querySubmitted)
+		auto httpClient = ref new HttpClient();
+		auto uri = ref new Uri(L"http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=" + sender->Text);
+
+		auto t = concurrency::create_task(httpClient->GetStringAsync(uri));
+		auto continuation = t.then([this, sender](Platform::String^ youtubeSuggestQueriesFile)
 		{
-			auto httpClient = ref new HttpClient();
-			auto uri = ref new Uri(L"http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=" + sender->Text);
+			auto suggestions = ref new Platform::Collections::Vector<Platform::String^>;
+			std::wstringstream jsonStream(youtubeSuggestQueriesFile->Data());
 
-			concurrency::create_task(httpClient->GetStringAsync(uri)).then([this, sender](Platform::String^ youtubeSuggestQueriesFile)
+			boost::property_tree::wptree pt;
+			read_json(jsonStream, pt);
+			try
 			{
-				auto suggestions = ref new Platform::Collections::Vector<Platform::String^>;
-				std::wstringstream jsonStream(youtubeSuggestQueriesFile->Data());
+				//podpowiedzi występują w drugim elemencie bez nazwy
+				for (auto item : pt.get_child(L"").rbegin()->second)
+					suggestions->Append(ref new Platform::String(item.second.get_value<std::wstring>().c_str()));
+			}
+			catch (const boost::property_tree::json_parser_error &)
+			{
+				//TODO:
+			}
+			sender->ItemsSource = suggestions;
+		}).then([](concurrency::task<void> t)
+		{
+			try
+			{
+				t.get();
+			}
+			catch (Platform::COMException^ e) 
+			{
 
-				boost::property_tree::wptree pt;
-				read_json(jsonStream, pt);
-				try
-				{
-					//podpowiedzi występują w drugim elemencie bez nazwy
-					for (auto item : pt.get_child(L"").rbegin()->second)
-						suggestions->Append(ref new Platform::String(item.second.get_value<std::wstring>().c_str()));
-				}
-				catch (const boost::property_tree::json_parser_error &)
-				{
-					//TODO:
-				}
-				sender->ItemsSource = suggestions;
-			});
-		}
-		else
-			querySubmitted = false;
+			}
+		});
 	}
+	else
+		sender->IsSuggestionListOpen = false;
 }
 
 void MainPage::AutoSuggestBox_SuggestionChosen(Windows::UI::Xaml::Controls::AutoSuggestBox^ sender, Windows::UI::Xaml::Controls::AutoSuggestBoxSuggestionChosenEventArgs^ args)
@@ -181,62 +217,5 @@ void MainPage::WindowProportionButton_Click(Platform::Object^ sender, Windows::U
 		MainGrid->RowDefinitions->GetAt(2)->Height = GridLength(0, GridUnitType::Star);
 
 		break;*/
-	}
-}
-
-void youtube_backgrounder::MainPage::AddPlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
-{
-	auto dialogPlaylistNameInput = ref new ContentDialogTextInput(playlists);
-
-	concurrency::create_task(dialogPlaylistNameInput->ShowAsync()).then([this, dialogPlaylistNameInput](Controls::ContentDialogResult result)
-	{
-		if (result == Controls::ContentDialogResult::Primary)
-		{
-			auto playlist = ref new YoutubePlaylist(dialogPlaylistNameInput->Text);
-			playlists->AppendPlaylist(playlist);
-			auto playlistLoader = ref new PlaylistIO;
-			playlistLoader->Write(playlists);
-		}
-	});
-}
-
-
-void youtube_backgrounder::MainPage::DeletePlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
-{
-	if (PlaylistsListView->SelectedItem != nullptr)
-	{
-		auto playlist = safe_cast<YoutubePlaylist^> (PlaylistsListView->SelectedItem);
-		playlist->clear();
-
-		playlists->DeletePlaylist(playlist);
-	}
-}
-
-
-void youtube_backgrounder::MainPage::PlaylistListViewItemControl_PlayButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
-{
-	auto element = safe_cast<FrameworkElement^> (sender);
-	auto playlist = (safe_cast<YoutubePlaylist^> (element->DataContext));
-
-	nowPlayingPlaylist->reset();
-	nowPlayingPlaylist->Name = playlist->Name;
-	for (auto item : playlist->Items)
-		nowPlayingPlaylist->add(item);
-
-	MenuSplitView->IsPaneOpen = false;
-	PlayerFrame->Navigate(TypeName(PlayerPage::typeid), nowPlayingPlaylist);
-}
-
-void youtube_backgrounder::MainPage::PlaylistsListView_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e)
-{
-	if (PlaylistsListView->SelectedItem != nullptr)
-	{
-		PlaylistsPageNavParam^ navParam = ref new PlaylistsPageNavParam(safe_cast<YoutubePlaylist^> (PlaylistsListView->SelectedItem));
-		PlaylistsFrame->Navigate(TypeName(PlaylistsPage::typeid), navParam);
-
-		PlaylistsFrame->Visibility = Windows::UI::Xaml::Visibility::Visible;
-
-		SearchFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
-		NowPlayingFrame->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
 	}
 }

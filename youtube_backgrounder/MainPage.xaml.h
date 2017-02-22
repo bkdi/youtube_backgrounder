@@ -18,10 +18,27 @@ namespace youtube_backgrounder
 	public:
 		MainPage();
 
+		property bool Internet
+		{
+			bool get() { return internet; }
+			void set(bool value)
+			{
+				internet = value;
+				OnPropertyChanged(L"Internet");
+			}
+		}
+
+	protected:
+		void OnPropertyChanged(Platform::String^ name)
+		{
+			PropertyChanged(this, ref new PropertyChangedEventArgs(name));
+		}
+
 	private:
 		YoutubePlaylist^ nowPlayingPlaylist;
 		YoutubePlaylistsCollection^ playlists;
 		bool querySubmitted;
+		bool internet;
 
 		void MenuButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void SearchButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
@@ -32,9 +49,9 @@ namespace youtube_backgrounder
 		void AutoSuggestBox_SuggestionChosen(Windows::UI::Xaml::Controls::AutoSuggestBox^ sender, Windows::UI::Xaml::Controls::AutoSuggestBoxSuggestionChosenEventArgs^ args);
 		void NowPlayingButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void WindowProportionButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void AddPlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void DeletePlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void PlaylistListViewItemControl_PlayButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
-		void PlaylistsListView_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);
+
+		void InternetChanged(Platform::Object^ sender, PropertyChangedEventArgs^ e);
+		void NetworkInformation_NetworkStatusChanged(Platform::Object^ sender);
+		virtual event PropertyChangedEventHandler^ PropertyChanged;
 	};
 }

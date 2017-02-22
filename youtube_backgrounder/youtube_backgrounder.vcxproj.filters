@@ -41,6 +41,7 @@
     <ClCompile Include="PlaylistIO.cpp" />
     <ClCompile Include="NowPlayingPage.xaml.cpp" />
     <ClCompile Include="YoutubeAPI_const.cpp" />
+    <ClCompile Include="PlayerPage2.xaml.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -68,6 +69,7 @@
     <ClInclude Include="PlaylistIO.h" />
     <ClInclude Include="NowPlayingPage.xaml.h" />
     <ClInclude Include="YoutubeAPI_const.h" />
+    <ClInclude Include="PlayerPage2.xaml.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -124,5 +126,6 @@
     <Page Include="PlaylistListViewItemControl.xaml" />
     <Page Include="NowPlayingPage.xaml" />
     <Page Include="NowPlayingListViewItemStyle.xaml" />
+    <Page Include="PlayerPage2.xaml" />
   </ItemGroup>
 </Project>

@@ -193,6 +193,9 @@
     <ClInclude Include="MainPage.xaml.h">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="PlayerPage2.xaml.h">
+      <DependentUpon>PlayerPage2.xaml</DependentUpon>
+    </ClInclude>
     <ClInclude Include="PlaylistIO.h" />
     <ClInclude Include="PlaylistListViewItemControl.xaml.h">
       <DependentUpon>PlaylistListViewItemControl.xaml</DependentUpon>
@@ -240,6 +243,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="PlayerPage.xaml" />
+    <Page Include="PlayerPage2.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="PlaylistListViewItemControl.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -314,6 +320,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="PlayerPage2.xaml.cpp">
+      <DependentUpon>PlayerPage2.xaml</DependentUpon>
     </ClCompile>
     <ClCompile Include="PlaylistIO.cpp" />
     <ClCompile Include="PlaylistListViewItemControl.xaml.cpp">
