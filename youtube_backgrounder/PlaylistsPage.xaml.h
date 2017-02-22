@@ -15,12 +15,16 @@ namespace youtube_backgrounder
 	public ref class PlaylistsPageNavParam sealed
 	{
 	public:
-		PlaylistsPageNavParam(YoutubePlaylist^ playlist) 
+		PlaylistsPageNavParam(YoutubePlaylistsCollection^ playlists, YoutubePlaylist^ nowPlayingPlaylist, Controls::Frame^ frame)
 		{
-			Playlist = playlist;
+			Playlists = playlists;
+			PlayerFrame = frame;
+			NowPlayingPlaylist = nowPlayingPlaylist;
 		}
 
-		property YoutubePlaylist^ Playlist;
+		property YoutubePlaylistsCollection^ Playlists;
+		property YoutubePlaylist^ NowPlayingPlaylist;
+		property Controls::Frame^ PlayerFrame;
 	};
 
 	/// <summary>
@@ -32,18 +36,6 @@ namespace youtube_backgrounder
 	public:
 		PlaylistsPage();
 
-		property Controls::Frame^ PlayerFrame
-		{
-			Controls::Frame^ get() { return (Controls::Frame^)GetValue(_PlayerFrameProperty); }
-			void set(Controls::Frame^ value) { SetValue(_PlayerFrameProperty, value); }
-		}
-
-		property YoutubePlaylist^ NowPlayingPlaylist
-		{
-			YoutubePlaylist^ get() { return (YoutubePlaylist^)GetValue(_NowPlayingPlaylistProperty); }
-			void set(YoutubePlaylist^ value) { SetValue(_NowPlayingPlaylistProperty, value); }
-		}
-
 	protected:
 		void OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e) override;
 
@@ -53,9 +45,11 @@ namespace youtube_backgrounder
 
 		PlaylistsPageNavParam^ inputParams;
 
-		static DependencyProperty^ _PlayerFrameProperty;
-		static DependencyProperty^ _NowPlayingPlaylistProperty;
-
 		void ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e);
+		void AddPlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void DeletePlaylistButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void PlaylistListViewItemControl_PlayButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void PlaylistsListView_SelectionChanged(Platform::Object^ sender, Windows::UI::Xaml::Controls::SelectionChangedEventArgs^ e);
+		void DeleteItemButton_Click(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }

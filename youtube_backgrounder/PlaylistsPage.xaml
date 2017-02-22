@@ -12,6 +12,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="AppColorSchemes.xaml"/>
+                <ResourceDictionary Source="SplitViewStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
@@ -21,28 +22,65 @@
     </Page.DataContext>
 
     <Grid Background="{ThemeResource BackgroundPageDefault}">
-            <ScrollViewer Margin="5,5,0,0" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto" >
-                <GridView x:Name="PlaylistItemsGridView" ItemsSource="{Binding YoutubeItems}" IsItemClickEnabled="True">
-                    <GridView.DataContext>
-                        <local:YoutubeItemsCollections/>
-                    </GridView.DataContext>
-                    <GridView.ItemTemplate>
-                        <DataTemplate>
-                            <local:GridViewItemControl ItemTitle="{Binding Title}" ThumbnailSource="{Binding LargeThumbnail}"/>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                    <GridView.ItemContainerStyle>
-                        <Style TargetType="GridViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-                        </Style>
-                    </GridView.ItemContainerStyle>
-                    <GridView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <ItemsWrapGrid Orientation="Horizontal" SizeChanged="ItemsWrapGrid_SizeChanged"/>
-                        </ItemsPanelTemplate>
-                    </GridView.ItemsPanel>
-                </GridView>
-            </ScrollViewer>
-        </Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="5">
+            <Button x:Name="AddPlaylistButton" Margin="1" Background="Black" Tag="&#59152;" Content="" Style="{StaticResource SplitViewButtonStyle}" ToolTipService.ToolTip="Add playlist" ToolTipService.Placement="Bottom" Click="AddPlaylistButton_Click" />
+            <Button x:Name="DeletePlaylistButton" Margin="1" Background="Black" Tag="&#59213;" Content="" Style="{StaticResource SplitViewButtonStyle}" ToolTipService.ToolTip="Delete playlist" ToolTipService.Placement="Bottom" Click="DeletePlaylistButton_Click"/>
+        </StackPanel>
+        <ScrollViewer Grid.Row="1" Margin="5,0,0,0" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto">
+            <ListView x:Name="PlaylistsListView" ItemsSource="{Binding PlaylistItems}" SelectionChanged="PlaylistsListView_SelectionChanged" >
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <local:PlaylistListViewItemControl Background="Black" PlaylistName="{Binding Name}" TracksCount="{Binding TracksCount}" PlayButtonClick="PlaylistListViewItemControl_PlayButtonClick"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Margin" Value="1"/>
+                        <Setter Property="Background" Value="Black"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+        </ScrollViewer>
+
+        <StackPanel Grid.Column="1" Margin="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="DeleteItemButton" Margin="1" Background="Black" Tag="&#59213;" Content="" Style="{StaticResource SplitViewButtonStyle}" ToolTipService.ToolTip="Delete item" ToolTipService.Placement="Bottom" Click="DeleteItemButton_Click"/>
+        </StackPanel>
+        <ScrollViewer Grid.Column="1" Grid.Row="1" Margin="5,0,5,0" VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto">
+            <GridView x:Name="PlaylistItemsGridView" ItemsSource="{Binding Items}" IsItemClickEnabled="True">
+                <GridView.DataContext>
+                    <local:YoutubePlaylist/>
+                </GridView.DataContext>
+                <GridView.ItemTemplate>
+                    <DataTemplate>
+                        <local:GridViewItemControl ItemTitle="{Binding Title}" ThumbnailSource="{Binding LargeThumbnail}"/>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+                <GridView.ItemContainerStyle>
+                    <Style TargetType="GridViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </GridView.ItemContainerStyle>
+                <GridView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsWrapGrid Orientation="Horizontal" SizeChanged="ItemsWrapGrid_SizeChanged"/>
+                    </ItemsPanelTemplate>
+                </GridView.ItemsPanel>
+            </GridView>
+        </ScrollViewer>
+    </Grid>
 </Page>
