@@ -66,9 +66,17 @@
 
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" MaxWidth="500"/>
+                        <ColumnDefinition Width="*" MaxWidth="520"/>
                     </Grid.ColumnDefinitions>
-                    <AutoSuggestBox PlaceholderText="Enter title..." VerticalAlignment="Center" HorizontalAlignment="Stretch" Height="32" Margin="30,4,50,4" QueryIcon="Find" MaxSuggestionListHeight="185" SuggestionChosen="AutoSuggestBox_SuggestionChosen" TextChanged="AutoSuggestBox_TextChanged" QuerySubmitted="AutoSuggestBox_QuerySubmitted"/>
+                    <AutoSuggestBox PlaceholderText="Enter title..." VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="30,4,130,4" QueryIcon="Find" MaxSuggestionListHeight="185" SuggestionChosen="AutoSuggestBox_SuggestionChosen" TextChanged="AutoSuggestBox_TextChanged" QuerySubmitted="AutoSuggestBox_QuerySubmitted"/>
+                    <ComboBox x:Name="ResultsOrderComboCox" HorizontalAlignment="Right" Margin="0,4,5,4" VerticalAlignment="Center" Width="120" SelectedIndex="0" ToolTipService.ToolTip="Results order">
+                        <ComboBox.Items>
+                            <ComboBoxItem>Relevance</ComboBoxItem>
+                            <ComboBoxItem>View count</ComboBoxItem>
+                            <ComboBoxItem>Rating</ComboBoxItem>
+                            <ComboBoxItem>Date</ComboBoxItem>
+                        </ComboBox.Items>
+                    </ComboBox>
                 </Grid>
                 <Frame Grid.Row="1" x:Name="PlayerFrame" BorderBrush="Black" BorderThickness="0,0,0,2"/>
                 <Frame Grid.Row="2" x:Name="PlaylistsFrame"/>

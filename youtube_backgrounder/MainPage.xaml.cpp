@@ -50,7 +50,7 @@ MainPage::MainPage()
 	auto playlistLoader = ref new PlaylistIO;
 	playlistLoader->Read(&playlists);
 
-	SearchPageNavParam^ navParam = ref new SearchPageNavParam(L"", PlayerFrame, playlists, nowPlayingPlaylist);
+	SearchPageNavParam^ navParam = ref new SearchPageNavParam(L"", PlayerFrame, playlists, nowPlayingPlaylist, L"");
 	SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
 
 	PlayerFrame->Navigate(TypeName(PlayerPage::typeid));
@@ -119,7 +119,10 @@ void MainPage::AutoSuggestBox_QuerySubmitted(Windows::UI::Xaml::Controls::AutoSu
 		querySubmitted = true;
 		sender->IsSuggestionListOpen = false;
 
-		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame, playlists, nowPlayingPlaylist);
+		auto selectedItem = safe_cast<ComboBoxItem^> (ResultsOrderComboCox->SelectedItem);
+		std::wstring orderType(selectedItem->Content->ToString()->Data());
+		boost::erase_all(orderType, " ");
+		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame, playlists, nowPlayingPlaylist, ref new Platform::String(orderType.c_str()));
 		SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
 
 		SearchButton->IsChecked = true;

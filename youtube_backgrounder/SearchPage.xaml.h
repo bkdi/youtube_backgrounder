@@ -17,18 +17,20 @@ namespace youtube_backgrounder
 	public ref class SearchPageNavParam sealed
 	{
 	public:
-		SearchPageNavParam(Platform::String^ searchedTitle, Controls::Frame^ frame, YoutubePlaylistsCollection^ playlists, YoutubePlaylist^ nowPlayingPlaylist)
+		SearchPageNavParam(Platform::String^ searchedTitle, Controls::Frame^ frame, YoutubePlaylistsCollection^ playlists, YoutubePlaylist^ nowPlayingPlaylist, Platform::String^ resultsOrder)
 		{
 			Title = searchedTitle;
 			PlayerFrame = frame;
 			Playlists = playlists;
 			NowPlayingPlaylist = nowPlayingPlaylist;
+			ResultsOrder = resultsOrder;
 		} 
 
 		property Platform::String^ Title;
 		property YoutubePlaylist^ NowPlayingPlaylist;
 		property Controls::Frame^ PlayerFrame;
 		property YoutubePlaylistsCollection^ Playlists;
+		property Platform::String^ ResultsOrder;
 	};
 
 	/// <summary>

@@ -51,7 +51,7 @@ void SearchPage::loadYoutubeItems()
 {
 	auto httpClient = ref new HttpClient();
 
-	Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=" + inputParams->Title + L"&type=video&key=" + YoutubeAPI::YOUTUBE_API_KEY;
+	Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=" + inputParams->Title + L"&order=" + inputParams->ResultsOrder + L"&type=video&key=" + YoutubeAPI::YOUTUBE_API_KEY;
 	if (!nextPageToken->IsEmpty())
 		url += L"&pageToken=" + nextPageToken;
 
