@@ -5,21 +5,37 @@
 using namespace youtube_backgrounder;
 using namespace Windows::Foundation;
 
-ref class YoutubeSearch sealed
+namespace youtube_backgrounder
 {
-public:
-	YoutubeSearch(Platform::String^ title);
+	public enum class YoutubeSearchedResultsOrder
+	{
+		Relevance,
+		ViewCount,
+		Rating,
+		Date
+	};
 
-	void getItemsCollection(YoutubeItemsCollections^* items);
-	IAsyncAction^ getItemsAsync();
+	Platform::String^ convertOrderToStr(YoutubeSearchedResultsOrder order);
+	Platform::String^ convertOrderToDescription(YoutubeSearchedResultsOrder order);
+	YoutubeSearchedResultsOrder convertDescriptionToOrder(Platform::String^ description);
 
-private:
-	Platform::String^ searchedTitle;
-	Platform::String^ nextPageToken;
+	ref class YoutubeSearch sealed
+	{
+	public:
+		YoutubeSearch();
 
-	YoutubeItemsCollections^ youtubeItems;
+		IAsyncOperation<YoutubeItemsCollections^>^ search(Platform::String^ title_, YoutubeSearchedResultsOrder order_, unsigned int resultsCount);
+		IAsyncOperation<YoutubeItemsCollections^>^ searchMore(unsigned int resultsCount);
 
-	void downloadItemsJsonStyleFile(std::wstringstream& jsonItemsStream);
-	void getItemsFromJsonFile(std::wstringstream& jsonItemsStream);
-};
+	private:
+		Platform::String^ title;
+		YoutubeSearchedResultsOrder order;
+		Platform::String^ nextPageToken;
+		bool useNextPageToken;
+
+		IAsyncOperation<YoutubeItemsCollections^>^ getResults(unsigned int resultsCount);
+		Platform::String^ prepareReq(unsigned int resultsCount);
+		YoutubeItemsCollections^ parseJSON(Platform::String^ searchedResultJSON);
+	};
+}
 

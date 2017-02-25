@@ -13,6 +13,7 @@
 #include "NowPlayingPage.xaml.h"
 #include "PlaylistIO.h"
 #include "ContentDialogTextInput.xaml.h"
+#include "YoutubeSearch.h"
 
 using namespace youtube_backgrounder;
 
@@ -50,9 +51,7 @@ MainPage::MainPage()
 	auto playlistLoader = ref new PlaylistIO;
 	playlistLoader->Read(&playlists);
 
-	SearchPageNavParam^ navParam = ref new SearchPageNavParam(L"", PlayerFrame, playlists, nowPlayingPlaylist, L"");
-	SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
-
+	SearchFrame->Navigate(TypeName(SearchPage::typeid));
 	PlayerFrame->Navigate(TypeName(PlayerPage::typeid));
 }
 
@@ -120,9 +119,7 @@ void MainPage::AutoSuggestBox_QuerySubmitted(Windows::UI::Xaml::Controls::AutoSu
 		sender->IsSuggestionListOpen = false;
 
 		auto selectedItem = safe_cast<ComboBoxItem^> (ResultsOrderComboCox->SelectedItem);
-		std::wstring orderType(selectedItem->Content->ToString()->Data());
-		boost::erase_all(orderType, " ");
-		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame, playlists, nowPlayingPlaylist, ref new Platform::String(orderType.c_str()));
+		SearchPageNavParam^ navParam = ref new SearchPageNavParam(sender->Text, PlayerFrame, playlists, nowPlayingPlaylist, convertDescriptionToOrder(selectedItem->Content->ToString()));
 		SearchFrame->Navigate(TypeName(SearchPage::typeid), navParam);
 
 		SearchButton->IsChecked = true;

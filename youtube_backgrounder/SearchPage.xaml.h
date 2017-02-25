@@ -8,16 +8,16 @@
 #include "SearchPage.g.h"
 #include "MainPage.xaml.h"
 #include "YoutubeItemData.h"
+#include "YoutubeSearch.h"
 
 using namespace Windows::UI::Xaml;
-using namespace Windows::Media;
 
 namespace youtube_backgrounder
 {
 	public ref class SearchPageNavParam sealed
 	{
 	public:
-		SearchPageNavParam(Platform::String^ searchedTitle, Controls::Frame^ frame, YoutubePlaylistsCollection^ playlists, YoutubePlaylist^ nowPlayingPlaylist, Platform::String^ resultsOrder)
+		SearchPageNavParam(Platform::String^ searchedTitle, Controls::Frame^ frame, YoutubePlaylistsCollection^ playlists, YoutubePlaylist^ nowPlayingPlaylist, YoutubeSearchedResultsOrder resultsOrder)
 		{
 			Title = searchedTitle;
 			PlayerFrame = frame;
@@ -30,7 +30,7 @@ namespace youtube_backgrounder
 		property YoutubePlaylist^ NowPlayingPlaylist;
 		property Controls::Frame^ PlayerFrame;
 		property YoutubePlaylistsCollection^ Playlists;
-		property Platform::String^ ResultsOrder;
+		property YoutubeSearchedResultsOrder ResultsOrder;
 	};
 
 	/// <summary>
@@ -58,10 +58,10 @@ namespace youtube_backgrounder
 		const double maxItemWidth = 360.0;
 
 		SearchPageNavParam^ inputParams;
-		Platform::String^ nextPageToken;
 		YoutubeItemsCollections^ itemsCollection;
+		YoutubeSearch^ youtubeSearch;
 
-		void loadYoutubeItems();
+		void loadYoutubeItems(bool loadMore);
 
 		void gridresult_ItemClick(Platform::Object^ sender, Windows::UI::Xaml::Controls::ItemClickEventArgs^ e);
 		void ItemsWrapGrid_SizeChanged(Platform::Object^ sender, Windows::UI::Xaml::SizeChangedEventArgs^ e);

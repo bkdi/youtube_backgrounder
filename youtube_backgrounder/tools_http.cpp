@@ -16,4 +16,12 @@ namespace ToolsHttp
 			data = youtubeGetVideoInfoFile;
 		}).wait();
 	}
+
+	concurrency::task<Platform::String^ > getDownloadingTask(Platform::String^ url)
+	{
+		auto httpClient = ref new HttpClient();
+		auto uri = ref new Uri(url);
+
+		return concurrency::create_task(httpClient->GetStringAsync(uri));
+	}
 }

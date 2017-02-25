@@ -32,63 +32,45 @@ DependencyProperty^ SearchPage::_PlaylistsProperty = DependencyProperty::Registe
 SearchPage::SearchPage()
 {
 	InitializeComponent();
-}
-
-void SearchPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
-{
-	inputParams = safe_cast<SearchPageNavParam^> (e->Parameter);
 
 	itemsCollection = ref new YoutubeItemsCollections;
 	gridresult->ItemsSource = itemsCollection->YoutubeItems;
 
-	Playlists = inputParams->Playlists;
-
-	if(!inputParams->Title->IsEmpty())
-		loadYoutubeItems();
+	youtubeSearch = ref new YoutubeSearch;
 }
 
-void SearchPage::loadYoutubeItems()
+void SearchPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEventArgs^ e)
 {
-	auto httpClient = ref new HttpClient();
-
-	Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=16&q=" + inputParams->Title + L"&order=" + inputParams->ResultsOrder + L"&type=video&key=" + YoutubeAPI::YOUTUBE_API_KEY;
-	if (!nextPageToken->IsEmpty())
-		url += L"&pageToken=" + nextPageToken;
-
-	auto uri = ref new Uri(url);
-
-	auto t = concurrency::create_task(httpClient->GetStringAsync(uri));
-	auto continuation = t.then([this](Platform::String^ jsonSearchedList)
+	if (e->Parameter != nullptr)
 	{
-		std::wstringstream jsonStream(jsonSearchedList->Data());
-		boost::property_tree::wptree pt;
+		inputParams = safe_cast<SearchPageNavParam^> (e->Parameter);
 
-		try
-		{
-			read_json(jsonStream, pt);
+		Playlists = inputParams->Playlists;
 
-			auto it = pt.find(L"nextPageToken");
-			if (it != pt.not_found())
-				nextPageToken = ref new Platform::String(it->second.get_value<std::wstring>().c_str());
+		if (!inputParams->Title->IsEmpty())
+			loadYoutubeItems(false);
+	}
+	else
+		EmptyPageInfoStackPanel->Visibility = Windows::UI::Xaml::Visibility::Visible;
+}
 
-			for (const boost::property_tree::wptree::value_type& item : pt.get_child(L"items"))
-			{
-				Platform::String^ videoId = ref new Platform::String(item.second.find(L"id")->second.find(L"videoId")->second.get_value<std::wstring>().c_str());
-				Platform::String^ title = ref new Platform::String(item.second.find(L"snippet")->second.find(L"title")->second.get_value<std::wstring>().c_str());
-				Platform::String^ smallThumbnail = ref new Platform::String(item.second.find(L"snippet")->second.find(L"thumbnails")->second.find(L"default")->second.find(L"url")->second.get_value<std::wstring>().c_str());
-				Platform::String^ largeThumbnail = ref new Platform::String(item.second.find(L"snippet")->second.find(L"thumbnails")->second.find(L"high")->second.find(L"url")->second.get_value<std::wstring>().c_str());
+void SearchPage::loadYoutubeItems(bool loadMore)
+{
+	IAsyncOperation<YoutubeItemsCollections^>^ oper;
+	if (loadMore)
+		oper = youtubeSearch->searchMore(10);
+	else
+		oper = youtubeSearch->search(inputParams->Title, inputParams->ResultsOrder, 16);
 
-				itemsCollection->AppendItem(videoId, title, smallThumbnail, largeThumbnail);
-			}
-		}
-		catch (const boost::property_tree::json_parser_error &)
-		{
-			//TODO:
-		}
-
-		EmptyPageInfoStackPanel->Visibility = itemsCollection->YoutubeItems->Size > 0 ? Windows::UI::Xaml::Visibility::Collapsed : Windows::UI::Xaml::Visibility::Visible;
-	}).then([](concurrency::task<void> t)
+	concurrency::create_task(oper).then([this](YoutubeItemsCollections^ searchedResults)
 	{
+		if(searchedResults != nullptr)
+			itemsCollection->Append(searchedResults);
+	}).then([this](concurrency::task<void> t)
+	{
+		if (itemsCollection->YoutubeItems->Size == 0)
+			EmptyPageInfoStackPanel->Visibility = Windows::UI::Xaml::Visibility::Visible;
+
 		try
 		{
 			t.get();
@@ -97,6 +79,10 @@ void SearchPage::loadYoutubeItems()
 		{
 			auto dialog = ref new Windows::UI::Popups::MessageDialog("Error loading YouTube items. Please check your internet connection.");
 			dialog->ShowAsync();
+		}
+		catch (Platform::NullReferenceException^ e)
+		{
+
 		}
 	});
 }
@@ -147,7 +133,7 @@ void SearchPage::scrollResult_ViewChanged(Platform::Object^ sender, Windows::UI:
 		auto maxVerticalOffset = scrollResult->ScrollableHeight;
 
 		if (maxVerticalOffset < 0 || verticalOffset == maxVerticalOffset)
-			loadYoutubeItems();
+			loadYoutubeItems(true);
 	}
 }
 

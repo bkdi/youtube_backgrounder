@@ -9,6 +9,12 @@ namespace youtube_backgrounder
 		vec = ref new Vector<YoutubeItem^>();
 	}
 
+	void YoutubeItemsCollections::Append(YoutubeItemsCollections^ collection)
+	{
+		for (auto item : collection->YoutubeItems)
+			vec->Append(item);
+	}
+
 	void YoutubeItemsCollections::AppendItem(Platform::String^ VideoIdStr, Platform::String^ TitleStr, Platform::String^ SmallThumbnailStr, Platform::String^ LargeThumbnailStr)
 	{
 		vec->Append(ref new YoutubeItem(VideoIdStr, TitleStr, SmallThumbnailStr, LargeThumbnailStr));

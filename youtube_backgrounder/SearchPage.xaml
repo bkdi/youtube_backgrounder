@@ -19,7 +19,7 @@
     </Page.DataContext>
 
     <Grid x:Name="grid_main" Background="{StaticResource BackgroundPageDefault}">
-        <StackPanel x:Name="EmptyPageInfoStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel x:Name="EmptyPageInfoStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
             <TextBlock Text="&#xE71E;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" FontSize="40"/>
             <TextBlock Text="No results"  FontSize="30" Margin="5,0,0,0"/>
         </StackPanel>

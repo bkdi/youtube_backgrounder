@@ -33,6 +33,7 @@ namespace youtube_backgrounder
 
 	public:
 		YoutubeItemsCollections();
+		void Append(YoutubeItemsCollections^ collection);
 		void AppendItem(Platform::String^ VideoIdStr, Platform::String^ TitleStr, Platform::String^ SmallThumbnailStr, Platform::String^ LargeThumbnailStr);
 		void AppendItem(YoutubeItem^ item);
 		void Clear();
