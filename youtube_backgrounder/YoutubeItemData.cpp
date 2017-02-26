@@ -15,6 +15,18 @@ namespace youtube_backgrounder
 			vec->Append(item);
 	}
 
+	void YoutubeItemsCollections::AppendNonexistent(YoutubeItemsCollections^ collection, unsigned int itemsCount)
+	{
+		for (auto it = collection->YoutubeItems->First(); it->HasCurrent && itemsCount > 0; it->MoveNext())
+		{
+			if (std::find(begin(vec), end(vec), it->Current) == end(vec))
+			{
+				vec->Append(it->Current);
+				--itemsCount;
+			}
+		}
+	}
+
 	void YoutubeItemsCollections::AppendItem(Platform::String^ VideoIdStr, Platform::String^ TitleStr, Platform::String^ SmallThumbnailStr, Platform::String^ LargeThumbnailStr)
 	{
 		vec->Append(ref new YoutubeItem(VideoIdStr, TitleStr, SmallThumbnailStr, LargeThumbnailStr));

@@ -42,6 +42,7 @@
     <ClCompile Include="NowPlayingPage.xaml.cpp" />
     <ClCompile Include="YoutubeAPI_const.cpp" />
     <ClCompile Include="PlayerPage2.xaml.cpp" />
+    <ClCompile Include="YoutubeVideoDetails.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -70,6 +71,7 @@
     <ClInclude Include="NowPlayingPage.xaml.h" />
     <ClInclude Include="YoutubeAPI_const.h" />
     <ClInclude Include="PlayerPage2.xaml.h" />
+    <ClInclude Include="YoutubeVideoDetails.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">

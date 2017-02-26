@@ -50,7 +50,7 @@ namespace youtube_backgrounder
 			return YoutubeSearchedResultsOrder::Relevance;
 	}
 
-	YoutubeSearch::YoutubeSearch()
+	YoutubeSearch::YoutubeSearch() : searchingMode(SearchingMode::Null), nextPageToken(L"")
 	{
 
 	}
@@ -59,15 +59,22 @@ namespace youtube_backgrounder
 	{
 		title = title_;
 		order = order_;
-		useNextPageToken = false;
+		searchingMode = SearchingMode::Search;
 		
 		return getResults(resultsCount);
 	}
 
 	IAsyncOperation<YoutubeItemsCollections^>^ YoutubeSearch::searchMore(unsigned int resultsCount)
 	{
-		useNextPageToken = true;
+		searchingMode = SearchingMode::SearchNextPage;
 		
+		return getResults(resultsCount);
+	}
+
+	IAsyncOperation<YoutubeItemsCollections^>^ YoutubeSearch::searchRelated(Platform::String^ videoId_, unsigned int resultsCount)
+	{
+		videoId = videoId_;
+		searchingMode = SearchingMode::SearchRelated;
 		return getResults(resultsCount);
 	}
 
@@ -75,19 +82,18 @@ namespace youtube_backgrounder
 	{
 		return concurrency::create_async([this, resultsCount]()
 		{
-			if (title->IsEmpty())
-				throw ref new Platform::InvalidArgumentException(L"Title for searching is empty.");
+			void validateParams();
 
-			YoutubeItemsCollections^ searchedResults = nullptr;
+			auto searchedResults = ref new YoutubeItemsCollections;
 
-			if (!useNextPageToken || (useNextPageToken && nextPageToken != nullptr && !nextPageToken->IsEmpty()))
+			if (searchingMode != SearchingMode::SearchNextPage || (searchingMode == SearchingMode::SearchNextPage && !nextPageToken->IsEmpty()))
 			{
 				auto url = prepareReq(resultsCount);
 
 				auto t = ToolsHttp::getDownloadingTask(url);
 				t.then([this, &searchedResults](Platform::String^ youtubeSearchedResults)
 				{
-					searchedResults = parseJSON(youtubeSearchedResults);
+					searchedResults = parseJSON(youtubeSearchedResults, searchedResults);
 				}).then([](concurrency::task<void> t)
 				{
 					try
@@ -107,14 +113,23 @@ namespace youtube_backgrounder
 
 	Platform::String^ YoutubeSearch::prepareReq(unsigned int resultsCount)
 	{
-		Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=" + resultsCount.ToString() + L"&q=" + title + L"&order=" + convertOrderToStr(order) + L"&key=" + YoutubeAPI::YOUTUBE_API_KEY;
-		if (useNextPageToken && !nextPageToken->IsEmpty())
+		Platform::String^ url = L"https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=" + resultsCount.ToString();
+		
+		if (searchingMode == SearchingMode::Search || searchingMode == SearchingMode::SearchNextPage)
+			url += L"&q=" + title + L"&order=" + convertOrderToStr(order);
+		
+		if (searchingMode == SearchingMode::SearchNextPage && !nextPageToken->IsEmpty())
 			url += L"&pageToken=" + nextPageToken;
+
+		if (searchingMode == SearchingMode::SearchRelated)
+			url += L"&relatedToVideoId=" + videoId;
+
+		url += L"&key=" + YoutubeAPI::YOUTUBE_API_KEY;
 
 		return url;
 	}
 
-	YoutubeItemsCollections^ YoutubeSearch::parseJSON(Platform::String^ searchedResultJSON)
+	YoutubeItemsCollections^ YoutubeSearch::parseJSON(Platform::String^ searchedResultJSON, YoutubeItemsCollections^& searchedResults)
 	{
 		std::wstringstream jsonStream(searchedResultJSON->Data());
 		boost::property_tree::wptree pt;
@@ -127,9 +142,8 @@ namespace youtube_backgrounder
 			if (it != pt.not_found())
 				nextPageToken = ref new Platform::String(it->second.get_value<std::wstring>().c_str());
 			else
-				nextPageToken = nullptr;
+				nextPageToken = L"";
 
-			auto searchedResults = ref new YoutubeItemsCollections;
 			for (const boost::property_tree::wptree::value_type& item : pt.get_child(L"items"))
 			{
 				auto videoId = ref new Platform::String(item.second.find(L"id")->second.find(L"videoId")->second.get_value<std::wstring>().c_str());
@@ -147,5 +161,25 @@ namespace youtube_backgrounder
 		}
 
 		return nullptr;
+	}
+
+	void YoutubeSearch::validateParams()
+	{
+		switch (searchingMode)
+		{
+		case SearchingMode::Search:
+		{
+			if (title->IsEmpty())
+				throw ref new Platform::InvalidArgumentException(L"Title for searching is empty.");
+
+			break;
+		}
+		case SearchingMode::SearchNextPage:
+			break;
+		case SearchingMode::SearchRelated:
+			break;
+		default: 
+			throw ref new Platform::InvalidArgumentException(L"Unknown searching mode.");
+		}
 	}
 }

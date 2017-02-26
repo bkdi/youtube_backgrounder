@@ -18,6 +18,8 @@ using namespace Windows::UI::Xaml::Data;
 using namespace Windows::UI::Xaml::Input;
 using namespace Windows::UI::Xaml::Media;
 using namespace Windows::UI::Xaml::Navigation;
+using namespace Windows::Web::Http;
+using namespace Windows::UI::Xaml::Interop;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -32,17 +34,3 @@ void NowPlayingPage::OnNavigatedTo(Windows::UI::Xaml::Navigation::NavigationEven
 	DataContext = nowPlayingPlaylist;
 	//NowPlayingListView->ItemsSource = nowPlayingPlaylist->Items;
 }
-
-Platform::Object^ NowPlayingBackgroundConverter::Convert(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language)
-{
-	if (safe_cast<bool> (value))
-		return ref new SolidColorBrush(Windows::UI::Colors::Blue);
-	else
-		return ref new SolidColorBrush(Windows::UI::Colors::Black);
-}
-
-Platform::Object^ NowPlayingBackgroundConverter::ConvertBack(Platform::Object^ value, Windows::UI::Xaml::Interop::TypeName targetType, Platform::Object^ parameter, Platform::String^ language)
-{
-	throw ref new Platform::NotImplementedException();
-}
-

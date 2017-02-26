@@ -26,16 +26,28 @@ namespace youtube_backgrounder
 
 		IAsyncOperation<YoutubeItemsCollections^>^ search(Platform::String^ title_, YoutubeSearchedResultsOrder order_, unsigned int resultsCount);
 		IAsyncOperation<YoutubeItemsCollections^>^ searchMore(unsigned int resultsCount);
+		IAsyncOperation<YoutubeItemsCollections^>^ searchRelated(Platform::String^ videoId, unsigned int resultsCount);
 
 	private:
+		enum class SearchingMode
+		{
+			Null,
+			Search,
+			SearchNextPage,
+			SearchRelated
+		};
+
 		Platform::String^ title;
+		Platform::String^ videoId;
 		YoutubeSearchedResultsOrder order;
 		Platform::String^ nextPageToken;
-		bool useNextPageToken;
+
+		SearchingMode searchingMode;
 
 		IAsyncOperation<YoutubeItemsCollections^>^ getResults(unsigned int resultsCount);
 		Platform::String^ prepareReq(unsigned int resultsCount);
-		YoutubeItemsCollections^ parseJSON(Platform::String^ searchedResultJSON);
+		YoutubeItemsCollections^ parseJSON(Platform::String^ searchedResultJSON, YoutubeItemsCollections^& searchedResults);
+		void validateParams();
 	};
 }
 

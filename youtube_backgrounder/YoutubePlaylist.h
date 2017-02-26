@@ -29,6 +29,8 @@ namespace youtube_backgrounder
 		};
 		
 		void add(YoutubeItem^ item);
+		void append(YoutubeItemsCollections^ items);
+		void appendNonexistent(YoutubeItemsCollections^ items, unsigned int elementsCount);
 		void clear();
 		void reset();
 		void deleteItem(YoutubeItem^ item);

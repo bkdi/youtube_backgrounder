@@ -9,6 +9,8 @@
 #include "YoutubeExtractor.h"
 #include "YouTubeSignatureDecrypt.h"
 #include "Settings.h"
+#include "YoutubeSearch.h"
+#include "YoutubeVideoDetails.h"
 
 using namespace youtube_backgrounder;
 
@@ -57,8 +59,56 @@ void PlayerPage::InitializeTransportControls()
 
 void PlayerPage::PlayItem(Platform::Object^ sender, PropertyChangedEventArgs^ e)
 {
-	if(nowPlayingPlaylist->NowPlayingIndex >= 0)
-		playItem(nowPlayingPlaylist->Items->GetAt(nowPlayingPlaylist->NowPlayingIndex));
+	if (e->PropertyName == L"NowPlayingIndex")
+	{
+		if (nowPlayingPlaylist->NowPlayingIndex >= 0)
+			playItem(nowPlayingPlaylist->Items->GetAt(nowPlayingPlaylist->NowPlayingIndex));
+
+		if (nowPlayingPlaylist->TracksCount > 0 && ((nowPlayingPlaylist->TracksCount - 1) - nowPlayingPlaylist->NowPlayingIndex) < 3)
+		{
+			auto youtubeSearch = ref new YoutubeSearch;
+
+			concurrency::create_task(youtubeSearch->searchRelated(nowPlayingPlaylist->getItems()->GetAt(nowPlayingPlaylist->TracksCount - 1)->VideoId, 20)).then([this](YoutubeItemsCollections^ searchedResults)
+			{
+				auto youtubeVideoDetails = ref new YoutubeVideoDetails;
+				concurrency::create_task(youtubeVideoDetails->fillVideosDetails(searchedResults)).then([this, searchedResults]()
+				{
+					std::sort(begin(searchedResults->YoutubeItems), end(searchedResults->YoutubeItems));
+					nowPlayingPlaylist->appendNonexistent(searchedResults, 3);
+				}).then([this](concurrency::task<void> t)
+				{
+					try
+					{
+						t.get();
+					}
+					catch (Platform::COMException^ e)
+					{
+						auto dialog = ref new Windows::UI::Popups::MessageDialog("Error loading YouTube items. Please check your internet connection.");
+						dialog->ShowAsync();
+					}
+					catch (Platform::NullReferenceException^ e)
+					{
+
+					}
+				});
+			}).then([this](concurrency::task<void> t)
+			{
+				try
+				{
+					t.get();
+				}
+				catch (Platform::COMException^ e)
+				{
+					auto dialog = ref new Windows::UI::Popups::MessageDialog("Error loading YouTube items. Please check your internet connection.");
+					dialog->ShowAsync();
+				}
+				catch (Platform::NullReferenceException^ e)
+				{
+
+				}
+			});
+		}
+	}
 }
 
 void PlayerPage::SystemControls_ButtonPressed(SystemMediaTransportControls^ sender, SystemMediaTransportControlsButtonPressedEventArgs^ args)

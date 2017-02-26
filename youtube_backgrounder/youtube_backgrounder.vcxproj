@@ -100,7 +100,7 @@
     <PackageCertificateKeyFile>youtube_backgrounder_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86</AppxBundlePlatforms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\v7;C:\Users\Bartłomiej\Documents\Visual Studio 2015\Libraries\boost_1_60_0;$(IncludePath)</IncludePath>
@@ -218,6 +218,7 @@
     <ClInclude Include="YoutubeQuality.h" />
     <ClInclude Include="YoutubeSearch.h" />
     <ClInclude Include="YouTubeSignatureDecrypt.h" />
+    <ClInclude Include="YoutubeVideoDetails.h" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -346,6 +347,7 @@
     <ClCompile Include="YoutubeQuality.cpp" />
     <ClCompile Include="YoutubeSearch.cpp" />
     <ClCompile Include="YouTubeSignatureDecrypt.cpp" />
+    <ClCompile Include="YoutubeVideoDetails.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

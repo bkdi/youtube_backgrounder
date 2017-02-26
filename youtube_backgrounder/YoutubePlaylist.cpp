@@ -20,6 +20,18 @@ namespace youtube_backgrounder
 		OnPropertyChanged("TracksCount");
 	}
 
+	void YoutubePlaylist::append(YoutubeItemsCollections^ items)
+	{
+		itemsCollection->Append(items);
+		OnPropertyChanged("TracksCount");
+	}
+
+	void YoutubePlaylist::appendNonexistent(YoutubeItemsCollections^ items, unsigned int elementsCount)
+	{
+		itemsCollection->AppendNonexistent(items, elementsCount);
+		OnPropertyChanged("TracksCount");
+	}
+
 	void YoutubePlaylist::clear()
 	{
 		itemsCollection->Clear();

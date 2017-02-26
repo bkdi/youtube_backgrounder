@@ -16,7 +16,6 @@
                 <ResourceDictionary Source="AppColorSchemes.xaml"/>
                 <ResourceDictionary Source="NowPlayingListviewItemStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-            <local:NowPlayingBackgroundConverter x:Key="NowPlayingBackgroundConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
