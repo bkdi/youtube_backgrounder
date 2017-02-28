@@ -43,6 +43,7 @@
     <ClCompile Include="YoutubeAPI_const.cpp" />
     <ClCompile Include="PlayerPage2.xaml.cpp" />
     <ClCompile Include="YoutubeVideoDetails.cpp" />
+    <ClCompile Include="CustomMediaTransportControls.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -72,6 +73,7 @@
     <ClInclude Include="YoutubeAPI_const.h" />
     <ClInclude Include="PlayerPage2.xaml.h" />
     <ClInclude Include="YoutubeVideoDetails.h" />
+    <ClInclude Include="CustomMediaTransportControls.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\LockScreenLogo.scale-200.png">
@@ -129,5 +131,6 @@
     <Page Include="NowPlayingPage.xaml" />
     <Page Include="NowPlayingListViewItemStyle.xaml" />
     <Page Include="PlayerPage2.xaml" />
+    <Page Include="CustomMediaTransportControls.xaml" />
   </ItemGroup>
 </Project>

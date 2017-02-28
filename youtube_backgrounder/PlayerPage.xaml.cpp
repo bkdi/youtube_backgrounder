@@ -61,10 +61,11 @@ void PlayerPage::PlayItem(Platform::Object^ sender, PropertyChangedEventArgs^ e)
 {
 	if (e->PropertyName == L"NowPlayingIndex")
 	{
-		if (nowPlayingPlaylist->NowPlayingIndex >= 0)
+		if (nowPlayingPlaylist->NowPlayingIndex >= 0 && nowPlayingPlaylist->NowPlayingIndex < nowPlayingPlaylist->TracksCount)
 			playItem(nowPlayingPlaylist->Items->GetAt(nowPlayingPlaylist->NowPlayingIndex));
 
-		if (nowPlayingPlaylist->TracksCount > 0 && ((nowPlayingPlaylist->TracksCount - 1) - nowPlayingPlaylist->NowPlayingIndex) < 3)
+		auto controls = safe_cast<CustomMediaTransportControls^> (musicPlayer->TransportControls);
+		if (controls->IsSearchRelated && nowPlayingPlaylist->TracksCount > 0 && ((nowPlayingPlaylist->TracksCount - 1) - nowPlayingPlaylist->NowPlayingIndex) < 3)
 		{
 			auto youtubeSearch = ref new YoutubeSearch;
 
@@ -152,8 +153,7 @@ void PlayerPage::NextItem()
 {
 	this->Dispatcher->RunAsync(Windows::UI::Core::CoreDispatcherPriority::Normal, ref new Windows::UI::Core::DispatchedHandler([this]()
 	{
-		if (nowPlayingPlaylist->NowPlayingIndex < nowPlayingPlaylist->Items->Size - 1)
-			++nowPlayingPlaylist->NowPlayingIndex;
+		nextTrack();
 	}));
 }
 
@@ -189,15 +189,7 @@ void PlayerPage::MusicPlayer_CurrentStateChanged(Platform::Object^ sender, Windo
 
 void youtube_backgrounder::PlayerPage::musicPlayer_MediaEnded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
 {	
-	try
-	{
-		if (nowPlayingPlaylist->NowPlayingIndex < nowPlayingPlaylist->Items->Size - 1)
-			++nowPlayingPlaylist->NowPlayingIndex;
-	}
-	catch (Platform::ChangedStateException^)
-	{
-
-	}
+	nextTrack();
 }
 
 void PlayerPage::playItem(YoutubeItem^ item)
@@ -224,4 +216,45 @@ void PlayerPage::playItem(YoutubeItem^ item)
 		loadingProgress->IsActive = false;
 		loadingProgress->Visibility = Windows::UI::Xaml::Visibility::Collapsed;
 	});
+}
+
+void PlayerPage::nextTrack()
+{
+	auto controls = safe_cast<CustomMediaTransportControls^> (musicPlayer->TransportControls);
+	
+	try
+	{
+		if (nowPlayingPlaylist->NowPlayingIndex < nowPlayingPlaylist->TracksCount - 1)
+			++nowPlayingPlaylist->NowPlayingIndex;
+		else if (controls->IsRepeat)
+			nowPlayingPlaylist->NowPlayingIndex = 0;
+	}
+	catch (Platform::ChangedStateException^)
+	{
+
+	}
+}
+
+void PlayerPage::previousTrack()
+{
+	try
+	{
+		if (nowPlayingPlaylist->NowPlayingIndex > 0)
+			--nowPlayingPlaylist->NowPlayingIndex;
+	}
+	catch (Platform::ChangedStateException^)
+	{
+
+	}
+}
+
+void PlayerPage::CustomMediaTransportControls_NextTrackButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	nextTrack();
+}
+
+
+void PlayerPage::CustomMediaTransportControls_PreviousTrackButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e)
+{
+	previousTrack();
 }

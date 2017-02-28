@@ -52,7 +52,7 @@ MainPage::MainPage()
 	playlistLoader->Read(&playlists);
 
 	SearchFrame->Navigate(TypeName(SearchPage::typeid));
-	PlayerFrame->Navigate(TypeName(PlayerPage::typeid));
+	PlayerFrame->Navigate(TypeName(PlayerPage::typeid), nowPlayingPlaylist);
 }
 
 void MainPage::NetworkInformation_NetworkStatusChanged(Platform::Object^ sender)

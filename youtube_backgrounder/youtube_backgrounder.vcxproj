@@ -177,6 +177,7 @@
     <ClInclude Include="ContentDialogTextInput.xaml.h">
       <DependentUpon>ContentDialogTextInput.xaml</DependentUpon>
     </ClInclude>
+    <ClInclude Include="CustomMediaTransportControls.h" />
     <ClInclude Include="GridViewItemControl.xaml.h">
       <DependentUpon>GridViewItemControl.xaml</DependentUpon>
     </ClInclude>
@@ -230,6 +231,9 @@
     </Page>
     <Page Include="ContentDialogTextInput.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomMediaTransportControls.xaml">
+      <DeploymentContent>true</DeploymentContent>
     </Page>
     <Page Include="GridViewItemControl.xaml">
       <SubType>Designer</SubType>
@@ -302,6 +306,7 @@
     <ClCompile Include="ContentDialogTextInput.xaml.cpp">
       <DependentUpon>ContentDialogTextInput.xaml</DependentUpon>
     </ClCompile>
+    <ClCompile Include="CustomMediaTransportControls.cpp" />
     <ClCompile Include="GridViewItemControl.xaml.cpp">
       <DependentUpon>GridViewItemControl.xaml</DependentUpon>
     </ClCompile>

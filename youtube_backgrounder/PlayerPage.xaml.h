@@ -33,11 +33,15 @@ namespace youtube_backgrounder
 		void PlayMedia();
 		void PauseMedia();
 		void NextItem();
+		void nextTrack();
 		void PreviousItem();
+		void previousTrack();
 		void MusicPlayer_CurrentStateChanged(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 		void musicPlayer_MediaEnded(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 
 		void PlayItem(Platform::Object^ sender, PropertyChangedEventArgs^ e);
 		void playItem(YoutubeItem^ item);
+		void CustomMediaTransportControls_NextTrackButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
+		void CustomMediaTransportControls_PreviousTrackButtonClick(Platform::Object^ sender, Windows::UI::Xaml::RoutedEventArgs^ e);
 	};
 }

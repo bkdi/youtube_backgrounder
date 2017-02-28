@@ -11,6 +11,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="AppColorSchemes.xaml"/>
+                <ResourceDictionary Source="CustomMediaTransportControls.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Page.Resources>
@@ -20,7 +21,7 @@
         <TextBlock Text="Starting..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Visibility="{Binding ElementName=loadingProgress, Path=Visibility}"/>
         <MediaElement x:Name="musicPlayer" AudioCategory="Media" CurrentStateChanged="MusicPlayer_CurrentStateChanged" Visibility="Visible" AreTransportControlsEnabled="True" AutoPlay="True" MediaEnded="musicPlayer_MediaEnded" RealTimePlayback="True" >
             <MediaElement.TransportControls>
-                <MediaTransportControls IsNextTrackButtonVisible="True" IsPreviousTrackButtonVisible="True" />
+                <local:CustomMediaTransportControls IsNextTrackButtonVisible="True" IsPreviousTrackButtonVisible="True" IsSkipBackwardEnabled="True" IsSkipBackwardButtonVisible="True" IsSkipForwardEnabled="True" IsSkipForwardButtonVisible="True" Style="{StaticResource CustomMediaTransportControlsStyle}" NextTrackButtonClick="CustomMediaTransportControls_NextTrackButtonClick" PreviousTrackButtonClick="CustomMediaTransportControls_PreviousTrackButtonClick"/>
             </MediaElement.TransportControls>
         </MediaElement>
     </Grid>
